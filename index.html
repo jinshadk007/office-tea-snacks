@@ -126,7 +126,69 @@ footer{color:#ad9d88}.rv{transition:opacity .65s ease,transform .65s ease}
 @media(max-width:860px){header .wrap{height:64px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.pic{height:150px}.banner{min-height:375px}.slide{padding:28px}.slide h1{font-size:clamp(32px,6vw,48px)}.art{width:clamp(125px,24vw,190px);height:clamp(125px,24vw,190px)}}
 @media(max-width:560px){.wrap{padding:0 14px}.banner{min-height:500px;margin:14px 0 24px;border-radius:22px}.slide{flex-direction:column;align-items:flex-start;justify-content:center;gap:18px;padding:26px 22px 48px}.slide:before{background:linear-gradient(180deg,rgba(13,10,7,.96) 0%,rgba(13,10,7,.82) 48%,rgba(13,10,7,.35) 100%)}.slide h1{font-size:clamp(34px,10vw,48px);letter-spacing:-1.4px}.slide p{font-size:14px}.art{width:150px;height:150px;align-self:flex-end}.grid{gap:10px}.pic{height:132px}.info{padding:12px;gap:9px}.nm{font-size:14px}.pr{font-size:15px}.ctl{gap:4px}.ctl button{width:30px;height:30px}.ctl .x{padding:0 8px;font-size:11px}.panel{padding:16px}section{padding:30px 0}header .wrap{gap:8px}.logo{font-size:15px}#cnt{padding:7px 10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-</style></head><body>
+
+/* Bright, playful cafe-style redesign */
+:root{--bg:#fffaf5;--card:#fff;--line:#f0e5db;--y:#e85b12;--w:#29150d;--mut:#6f625c;color-scheme:light}
+html{background:#fffaf5}
+body{background:#fffaf5;color:#29150d;font-family:Inter,"DM Sans",system-ui,sans-serif}
+.wrap{max-width:1320px;padding:0 26px}
+header{background:rgba(255,255,255,.94);border-bottom:1px solid #f1e6dd;box-shadow:0 5px 24px rgba(68,35,15,.05)}
+header .wrap{height:76px;gap:22px}
+.logo{color:#54230e;font-size:20px}
+header a{color:#392016;opacity:1;font-weight:650}
+.chip{background:#fff0e3;color:#9e3608;border:1px solid #f6d8c4;border-radius:999px;padding:10px 16px}
+#cnt{background:#5b240e;color:white;border-color:#5b240e}
+.banner{margin:18px 0 28px;min-height:370px;border:0;border-radius:26px;box-shadow:0 18px 44px rgba(63,31,13,.18)}
+.slide{padding:clamp(28px,5vw,62px);background-size:cover;background-position:center right}
+.slide:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(35,15,6,.94) 0%,rgba(45,21,8,.83) 38%,rgba(45,21,8,.08) 100%);z-index:0}
+.s1{background-image:url("https://images.unsplash.com/photo-1544787219-7f47f2d6c3c7?auto=format&fit=crop&w=1900&q=90")}
+.s2{background-image:url("https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1900&q=90")}
+.s3{background-image:url("https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1900&q=90")}
+.slide h1{font-size:clamp(34px,5vw,62px);line-height:1.08;letter-spacing:-1.8px;color:#fff;max-width:620px}
+.slide h1 b{color:#ffbd65}
+.slide p{font-size:16px;line-height:1.7;color:#fff0e5;max-width:430px}
+.btn{background:linear-gradient(135deg,#ffad28,#f07813);color:#321507;border:0;border-radius:999px;padding:13px 23px;box-shadow:0 8px 22px rgba(242,112,18,.25);font-weight:800}
+.art{width:clamp(155px,22vw,270px);height:clamp(155px,22vw,270px);border-radius:26px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.28))}
+.art img{width:100%;height:100%;object-fit:cover;border:5px solid rgba(255,255,255,.82);border-radius:26px}
+.dots i{background:#f2c9a8}.dots i.on{background:#ffae36}
+section{padding:34px 0}
+h2{color:#351b10;font-size:clamp(25px,3vw,32px);letter-spacing:-.7px}
+h2 span{color:#e85b12}
+.sub{color:#76665e;line-height:1.65}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.card{background:#fff;border:1px solid #f0e5dc;border-radius:19px;box-shadow:0 8px 24px rgba(74,39,18,.07);color:#321b12}
+.card:hover{transform:translateY(-6px);border-color:#f2a15e;box-shadow:0 16px 30px rgba(74,39,18,.12)}
+.card.sel{border-color:#ed792b;box-shadow:0 0 0 2px rgba(237,121,43,.15),0 12px 24px rgba(74,39,18,.08)}
+.pic{height:180px;background:#f5e8dd}
+.pic img{object-fit:cover}
+.info{padding:15px;gap:11px}
+.nm{color:#321b12;font-size:15px}
+.pr{color:#b8440c;font-size:17px}
+.tot{color:#88776d}
+.sbtn{background:#fff3e8;border:1px solid #f7d5bd;color:#a43b0a;border-radius:999px;padding:10px}
+.sbtn:hover{background:#f07813;color:#fff}
+.ctl button{background:#f4e8de;color:#4a2718;border-radius:50%}
+.ctl button.p{background:#f07813;color:#fff}
+.ctl .x{background:#fff0ec;color:#bd3f25}
+.panel,.mb{background:#fff;border:1px solid #f0e2d6;border-radius:20px;box-shadow:0 10px 28px rgba(74,39,18,.06);color:#321b12}
+.tg div,.dd{background:#fff8f2;border:1px solid #f0e2d6;border-radius:14px;color:#321b12}
+.tg b,.at th{color:#e85b12}
+.big div{background:linear-gradient(135deg,#ffcf8d,#ff9b39);color:#52230d;border-radius:15px}
+input{background:#fff;border:1px solid #ead9cc;color:#321b12;border-radius:12px}
+input::placeholder{color:#a28f83}
+#bar{background:rgba(255,255,255,.96);border-top:2px solid #f07813;box-shadow:0 -8px 24px rgba(74,39,18,.1)}
+.cancel{background:#fff0ec;color:#b63822}
+footer{color:#8a776c}
+.up{background:#fff;border-color:#f07813;color:#b94c0b}
+.md{background:rgba(39,20,10,.55)}
+.xx{background:#fff0e5;color:#55230d}
+.qr b{color:#e85b12}
+.admbox .panel{border-color:#f1c69f}
+.rv{transition:opacity .6s ease,transform .6s ease}
+@media(max-width:860px){.wrap{padding:0 18px}.banner{min-height:400px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.pic{height:155px}.slide{padding:26px}.slide h1{font-size:clamp(31px,6vw,46px)}header .wrap{height:68px}}
+@media(max-width:560px){.wrap{padding:0 14px}.banner{min-height:485px;margin:12px 0 22px;border-radius:20px}.slide{flex-direction:column;align-items:flex-start;justify-content:center;gap:16px;padding:24px 20px 44px}.slide:before{background:linear-gradient(180deg,rgba(35,15,6,.94),rgba(45,21,8,.75) 60%,rgba(45,21,8,.24))}.slide h1{font-size:clamp(32px,9vw,45px)}.slide p{font-size:14px}.art{width:145px;height:145px;align-self:flex-end}.grid{gap:10px}.pic{height:130px}.info{padding:11px}.logo{font-size:15px}header .wrap{gap:8px}.panel{padding:15px}section{padding:26px 0}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+.hero-kicker{font-size:12px;letter-spacing:3px;font-weight:800;color:#ffe2bf;margin-bottom:16px}.hero-kicker b{color:#ffb342;padding:0 7px}.hero-outline{background:transparent;border:1.5px solid #fff;color:#fff;box-shadow:none;margin-left:8px}.hero-joke{display:inline-block;margin-top:18px;padding:8px 13px;border:1px solid rgba(255,220,185,.42);background:rgba(255,255,255,.1);border-radius:999px;color:#fff3e8;font-size:12px;backdrop-filter:blur(8px)}.slide>div:first-child{position:relative;z-index:2;max-width:58%}.slide .art{position:relative;z-index:1}@media(max-width:560px){.slide>div:first-child{max-width:100%}.hero-outline{margin:10px 0 0 0}}\n</style></head><body>
 <div class="md on" id="gate"><div class="mb"><h2>Your company <span>workspace</span></h2>
 <p class="sub" id="gs">Enter your company name or code to join. A new name creates a new workspace.</p>
 <input id="wsname" placeholder="Company name or code, e.g. Acme Foods" maxlength="40">
@@ -138,9 +200,9 @@ footer{color:#ad9d88}.rv{transition:opacity .65s ease,transform .65s ease}
 
 <main class="wrap">
 <div class="banner" id="banner">
- <div class="slide s1 on"><div><h1>Fresh <b>Tea &amp; Coffee</b><br>at your desk</h1><p>Hot, strong, light or without sugar. Pick yours in seconds.</p><a class="btn" data-go="tea">Order a drink</a></div><div class="art" id="ba1"><span class="ph"><img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85" alt="Fresh tea"></span><button class="up" data-u="b1">📷 Photo</button></div></div>
- <div class="slide s2"><div><h1>Crispy <b>Snacks</b><br>every evening</h1><p>Samosa, ullivada, parippuvada, puffs and many more, served hot.</p><a class="btn" data-go="snacks">Order snacks</a></div><div class="art" id="ba2"><span class="ph"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85" alt="Indian snacks"></span><button class="up" data-u="b2">📷 Photo</button></div></div>
- <div class="slide s3"><div><h1>One list for the <b>whole office</b></h1><p>Everyone orders from their own device. Totals update live for the team.</p><a class="btn" data-go="totals">See totals</a></div><div class="art" id="ba3"><span class="ph"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85" alt="Coffee cup"></span><button class="up" data-u="b3">📷 Photo</button></div></div>
+ <div class="slide s1 on"><div><div class="hero-kicker">FRESH <b>•</b> HOT <b>•</b> ON TIME</div><h1>Tea, Coffee &amp;<br>Snacks at <b>Your Office</b></h1><p>Fresh beverages and tasty snacks delivered directly to your workspace.</p><a class="btn" data-go="tea">Order Now</a> <a class="btn hero-outline" data-go="snacks">Explore Menu</a><div class="hero-joke">☕ Tea break? You deserve it. 😎</div></div><div class="art" id="ba1"><span class="ph"><img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85" alt="Fresh tea"></span><button class="up" data-u="b1">📷 Photo</button></div></div>
+ <div class="slide s2"><div><div class="hero-kicker">CRUNCHY <b>•</b> FRESH <b>•</b> DELICIOUS</div><h1>Snack o’clock<br>is the <b>best time</b></h1><p>Kerala favourites and office-time treats, freshly served whenever cravings call.</p><a class="btn" data-go="snacks">Explore Snacks</a><div class="hero-joke">🥟 Calories don’t count at work. Right?</div></div><div class="art" id="ba2"><span class="ph"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85" alt="Indian snacks"></span><button class="up" data-u="b2">📷 Photo</button></div></div>
+ <div class="slide s3"><div><div class="hero-kicker">MADE FOR YOUR TEAM</div><h1>One order.<br><b>Happy office.</b></h1><p>Everyone orders from their own device. Your team totals update live.</p><a class="btn" data-go="totals">View Team Orders</a><div class="hero-joke">😋 Meetings are better with snacks.</div></div><div class="art" id="ba3"><span class="ph"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85" alt="Coffee cup"></span><button class="up" data-u="b3">📷 Photo</button></div></div>
  <div class="dots"><i class="on"></i><i></i><i></i></div>
 </div>
 
@@ -172,7 +234,7 @@ footer{color:#ad9d88}.rv{transition:opacity .65s ease,transform .65s ease}
 
 <script>
 // ✏️ Edit names, emoji and prices here (₹)
-const PHOTO_MAP={"tea0":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85","tea1":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85","tea2":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85","tea3":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85","tea4":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85","tea5":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85","cof0":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85","cof1":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85","cof2":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85","cof3":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85","cof4":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85","cof5":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85","sn0":"https://images.unsplash.com/photo-1572099107898-46f22b3af4f9?auto=format&fit=crop&w=900&q=85","sn1":"https://commons.wikimedia.org/wiki/Special:FilePath/Pazham_pozhi.jpg?width=900","sn2":"https://upload.wikimedia.org/wikipedia/commons/a/aa/Onion_Pakora.JPG","sn3":"https://images.unsplash.com/photo-1625242661157-e9e5708ffe5e?auto=format&fit=crop&w=900&q=85","sn4":"https://commons.wikimedia.org/wiki/Special:FilePath/Egg_Puff.jpg?width=900","sn5":"https://upload.wikimedia.org/wikipedia/commons/a/ab/Parippuvada.JPG","sn6":"https://commons.wikimedia.org/wiki/Special:FilePath/Sukhiyan_02.jpg?width=900","sn7":"https://commons.wikimedia.org/wiki/Special:FilePath/Pathiri.jpg?width=900","sn8":"https://commons.wikimedia.org/wiki/Special:FilePath/Raw_banana_bajji.jpg?width=900"};
+const PHOTO_MAP={"tea0":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea1":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea2":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea3":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea4":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea5":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","cof0":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof1":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof2":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof3":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof4":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof5":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","sn0":"https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1000&q=88","sn1":"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1000&q=88","sn2":"https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=1000&q=88","sn3":"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=1000&q=88","sn4":"https://images.unsplash.com/photo-1623334044303-241021148842?auto=format&fit=crop&w=1000&q=88","sn5":"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1000&q=88","sn6":"https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1000&q=88","sn7":"https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=1000&q=88","sn8":"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=1000&q=88"};
 const ITEMS=[
  ...[["Normal Tea",10],["Light Tea",10],["Strong Tea",12],["Tea Without Sugar",10],["Light Tea Without Sugar",10],["Strong Tea Without Sugar",12]].map(([n,p],i)=>({id:"tea"+i,n,p,c:"Tea",e:"🍵"})),
  ...[["Normal Coffee",15],["Light Coffee",15],["Strong Coffee",18],["Coffee Without Sugar",15],["Light Coffee Without Sugar",15],["Strong Coffee Without Sugar",18]].map(([n,p],i)=>({id:"cof"+i,n,p,c:"Coffee",e:"☕"})),
