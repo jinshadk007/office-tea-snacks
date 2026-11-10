@@ -85,110 +85,7 @@ input{background:#101010;border:1px solid var(--line);color:#fff;border-radius:1
 footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
 @media(max-width:860px){.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.big{grid-template-columns:repeat(2,1fr)}.slide{padding:24px 20px}.pic{height:100px;font-size:52px}header a{display:none}}
 @media(max-width:480px){.art{font-size:80px}.slide p{font-size:13px}}
-/* Premium cafe UI refresh */
-:root{--bg:#100d09;--card:#1c1711;--line:#3a2b1d;--y:#f5bd45;--w:#fffaf1;--mut:#c1b5a5}
-body{background:radial-gradient(ellipse at 50% -20%,#332112 0,#100d09 55%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-.wrap{max-width:1240px;padding:0 22px}
-header{background:rgba(16,13,9,.9);border-bottom:1px solid rgba(245,189,69,.2)}
-header .wrap{height:70px;gap:20px}.logo{font-size:19px;letter-spacing:-.5px}
-header a{font-weight:600;transition:color .2s}header a:hover{color:var(--y);opacity:1}
-.chip,.btn{background:linear-gradient(135deg,#ffd878,#e5a52f);box-shadow:0 8px 24px rgba(229,165,47,.16)}
-.banner{margin:26px 0 34px;min-height:430px;border:1px solid rgba(245,189,69,.25);border-radius:28px;background:#1b120b;box-shadow:0 24px 70px rgba(0,0,0,.34)}
-.slide{padding:clamp(28px,5vw,66px);background-size:cover;background-position:center}
-.slide:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,10,7,.96) 0%,rgba(13,10,7,.82) 44%,rgba(13,10,7,.12) 100%);z-index:0}
-.slide>div{position:relative;z-index:1}
-.s1{background-image:url("https://images.unsplash.com/photo-1544787219-7f47f2d6c3c7?auto=format&fit=crop&w=1800&q=85")}
-.s2{background-image:url("https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1800&q=85")}
-.s3{background-image:url("https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1800&q=85")}
-.slide h1{font-size:clamp(36px,5.2vw,66px);letter-spacing:-2px;max-width:650px}.slide h1 b{color:#ffd36d}
-.slide p{font-size:16px;line-height:1.75;color:#e0d3c0;max-width:450px}
-.btn{border-radius:999px;padding:13px 24px;font-size:14px}
-.art{width:clamp(160px,25vw,310px);height:clamp(160px,25vw,310px);flex:0 0 auto;border-radius:28px;overflow:hidden;filter:drop-shadow(0 18px 38px rgba(0,0,0,.45))}
-.art img{width:100%;height:100%;object-fit:cover;border:1px solid rgba(255,255,255,.24);border-radius:28px}.art .ph{width:100%;height:100%;font-size:0}
-.dots{z-index:3}.dots i{background:#a68a63}.dots i.on{background:#ffd36d}
-section{padding:42px 0}h2{font-size:clamp(25px,3vw,32px);letter-spacing:-.8px}h2 span{color:#ffd36d}
-.sub{color:#c1b5a5;font-size:14px;line-height:1.7}
-.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-.card{background:linear-gradient(155deg,#251c13,#17120d);border:1px solid #443321;border-radius:20px;box-shadow:0 12px 28px rgba(0,0,0,.15)}
-.card:hover{transform:translateY(-7px);border-color:#e5ad42;box-shadow:0 18px 36px rgba(0,0,0,.3)}
-.card.sel{border-color:#ffd36d;box-shadow:0 0 0 1px #ffd36d,0 18px 36px rgba(0,0,0,.3)}
-.pic{height:190px;background:#21180f}.pic .ph{display:block;position:absolute;inset:0}
-.pic img{transition:transform .55s ease}.card:hover .pic img{transform:scale(1.06)}
-.info{padding:16px;gap:12px}.nm{font-size:15px}.pr{font-size:16px;color:#ffd36d}
-.sbtn{border-color:#d8a63e;color:#ffd36d;border-radius:999px;padding:11px}.sbtn:hover{background:#ffd36d;color:#17120d}
-.ctl button{border-radius:50%;background:#382a1b}.ctl button.p{background:#ffd36d}
-.panel{background:linear-gradient(145deg,#211910,#17120d);border-color:#443321;border-radius:22px;box-shadow:0 14px 36px rgba(0,0,0,.18)}
-.big div{background:linear-gradient(135deg,#ffd878,#e4a32d);border-radius:16px}
-.tg div,.dd{background:#17120d;border-color:#443321;border-radius:14px}.tg b,.at th{color:#ffd36d}
-input{background:#120e0a;border-color:#4a3926;border-radius:12px}
-#bar{background:rgba(24,18,12,.96);border-top-color:#dca43a;backdrop-filter:blur(12px)}
-footer{color:#ad9d88}.rv{transition:opacity .65s ease,transform .65s ease}
-@media(max-width:860px){header .wrap{height:64px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.pic{height:150px}.banner{min-height:375px}.slide{padding:28px}.slide h1{font-size:clamp(32px,6vw,48px)}.art{width:clamp(125px,24vw,190px);height:clamp(125px,24vw,190px)}}
-@media(max-width:560px){.wrap{padding:0 14px}.banner{min-height:500px;margin:14px 0 24px;border-radius:22px}.slide{flex-direction:column;align-items:flex-start;justify-content:center;gap:18px;padding:26px 22px 48px}.slide:before{background:linear-gradient(180deg,rgba(13,10,7,.96) 0%,rgba(13,10,7,.82) 48%,rgba(13,10,7,.35) 100%)}.slide h1{font-size:clamp(34px,10vw,48px);letter-spacing:-1.4px}.slide p{font-size:14px}.art{width:150px;height:150px;align-self:flex-end}.grid{gap:10px}.pic{height:132px}.info{padding:12px;gap:9px}.nm{font-size:14px}.pr{font-size:15px}.ctl{gap:4px}.ctl button{width:30px;height:30px}.ctl .x{padding:0 8px;font-size:11px}.panel{padding:16px}section{padding:30px 0}header .wrap{gap:8px}.logo{font-size:15px}#cnt{padding:7px 10px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
-
-/* Bright, playful cafe-style redesign */
-:root{--bg:#fffaf5;--card:#fff;--line:#f0e5db;--y:#e85b12;--w:#29150d;--mut:#6f625c;color-scheme:light}
-html{background:#fffaf5}
-body{background:#fffaf5;color:#29150d;font-family:Inter,"DM Sans",system-ui,sans-serif}
-.wrap{max-width:1320px;padding:0 26px}
-header{background:rgba(255,255,255,.94);border-bottom:1px solid #f1e6dd;box-shadow:0 5px 24px rgba(68,35,15,.05)}
-header .wrap{height:76px;gap:22px}
-.logo{color:#54230e;font-size:20px}
-header a{color:#392016;opacity:1;font-weight:650}
-.chip{background:#fff0e3;color:#9e3608;border:1px solid #f6d8c4;border-radius:999px;padding:10px 16px}
-#cnt{background:#5b240e;color:white;border-color:#5b240e}
-.banner{margin:18px 0 28px;min-height:370px;border:0;border-radius:26px;box-shadow:0 18px 44px rgba(63,31,13,.18)}
-.slide{padding:clamp(28px,5vw,62px);background-size:cover;background-position:center right}
-.slide:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(35,15,6,.94) 0%,rgba(45,21,8,.83) 38%,rgba(45,21,8,.08) 100%);z-index:0}
-.s1{background-image:url("https://images.unsplash.com/photo-1544787219-7f47f2d6c3c7?auto=format&fit=crop&w=1900&q=90")}
-.s2{background-image:url("https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1900&q=90")}
-.s3{background-image:url("https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1900&q=90")}
-.slide h1{font-size:clamp(34px,5vw,62px);line-height:1.08;letter-spacing:-1.8px;color:#fff;max-width:620px}
-.slide h1 b{color:#ffbd65}
-.slide p{font-size:16px;line-height:1.7;color:#fff0e5;max-width:430px}
-.btn{background:linear-gradient(135deg,#ffad28,#f07813);color:#321507;border:0;border-radius:999px;padding:13px 23px;box-shadow:0 8px 22px rgba(242,112,18,.25);font-weight:800}
-.art{width:clamp(155px,22vw,270px);height:clamp(155px,22vw,270px);border-radius:26px;filter:drop-shadow(0 18px 30px rgba(0,0,0,.28))}
-.art img{width:100%;height:100%;object-fit:cover;border:5px solid rgba(255,255,255,.82);border-radius:26px}
-.dots i{background:#f2c9a8}.dots i.on{background:#ffae36}
-section{padding:34px 0}
-h2{color:#351b10;font-size:clamp(25px,3vw,32px);letter-spacing:-.7px}
-h2 span{color:#e85b12}
-.sub{color:#76665e;line-height:1.65}
-.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-.card{background:#fff;border:1px solid #f0e5dc;border-radius:19px;box-shadow:0 8px 24px rgba(74,39,18,.07);color:#321b12}
-.card:hover{transform:translateY(-6px);border-color:#f2a15e;box-shadow:0 16px 30px rgba(74,39,18,.12)}
-.card.sel{border-color:#ed792b;box-shadow:0 0 0 2px rgba(237,121,43,.15),0 12px 24px rgba(74,39,18,.08)}
-.pic{height:180px;background:#f5e8dd}
-.pic img{object-fit:cover}
-.info{padding:15px;gap:11px}
-.nm{color:#321b12;font-size:15px}
-.pr{color:#b8440c;font-size:17px}
-.tot{color:#88776d}
-.sbtn{background:#fff3e8;border:1px solid #f7d5bd;color:#a43b0a;border-radius:999px;padding:10px}
-.sbtn:hover{background:#f07813;color:#fff}
-.ctl button{background:#f4e8de;color:#4a2718;border-radius:50%}
-.ctl button.p{background:#f07813;color:#fff}
-.ctl .x{background:#fff0ec;color:#bd3f25}
-.panel,.mb{background:#fff;border:1px solid #f0e2d6;border-radius:20px;box-shadow:0 10px 28px rgba(74,39,18,.06);color:#321b12}
-.tg div,.dd{background:#fff8f2;border:1px solid #f0e2d6;border-radius:14px;color:#321b12}
-.tg b,.at th{color:#e85b12}
-.big div{background:linear-gradient(135deg,#ffcf8d,#ff9b39);color:#52230d;border-radius:15px}
-input{background:#fff;border:1px solid #ead9cc;color:#321b12;border-radius:12px}
-input::placeholder{color:#a28f83}
-#bar{background:rgba(255,255,255,.96);border-top:2px solid #f07813;box-shadow:0 -8px 24px rgba(74,39,18,.1)}
-.cancel{background:#fff0ec;color:#b63822}
-footer{color:#8a776c}
-.up{background:#fff;border-color:#f07813;color:#b94c0b}
-.md{background:rgba(39,20,10,.55)}
-.xx{background:#fff0e5;color:#55230d}
-.qr b{color:#e85b12}
-.admbox .panel{border-color:#f1c69f}
-.rv{transition:opacity .6s ease,transform .6s ease}
-@media(max-width:860px){.wrap{padding:0 18px}.banner{min-height:400px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.pic{height:155px}.slide{padding:26px}.slide h1{font-size:clamp(31px,6vw,46px)}header .wrap{height:68px}}
-@media(max-width:560px){.wrap{padding:0 14px}.banner{min-height:485px;margin:12px 0 22px;border-radius:20px}.slide{flex-direction:column;align-items:flex-start;justify-content:center;gap:16px;padding:24px 20px 44px}.slide:before{background:linear-gradient(180deg,rgba(35,15,6,.94),rgba(45,21,8,.75) 60%,rgba(45,21,8,.24))}.slide h1{font-size:clamp(32px,9vw,45px)}.slide p{font-size:14px}.art{width:145px;height:145px;align-self:flex-end}.grid{gap:10px}.pic{height:130px}.info{padding:11px}.logo{font-size:15px}header .wrap{gap:8px}.panel{padding:15px}section{padding:26px 0}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
-.hero-kicker{font-size:12px;letter-spacing:3px;font-weight:800;color:#ffe2bf;margin-bottom:16px}.hero-kicker b{color:#ffb342;padding:0 7px}.hero-outline{background:transparent;border:1.5px solid #fff;color:#fff;box-shadow:none;margin-left:8px}.hero-joke{display:inline-block;margin-top:18px;padding:8px 13px;border:1px solid rgba(255,220,185,.42);background:rgba(255,255,255,.1);border-radius:999px;color:#fff3e8;font-size:12px;backdrop-filter:blur(8px)}.slide>div:first-child{position:relative;z-index:2;max-width:58%}.slide .art{position:relative;z-index:1}@media(max-width:560px){.slide>div:first-child{max-width:100%}.hero-outline{margin:10px 0 0 0}}\n</style></head><body>
+</style></head><body>
 <div class="md on" id="gate"><div class="mb"><h2>Your company <span>workspace</span></h2>
 <p class="sub" id="gs">Enter your company name or code to join. A new name creates a new workspace.</p>
 <input id="wsname" placeholder="Company name or code, e.g. Acme Foods" maxlength="40">
@@ -200,9 +97,9 @@ footer{color:#8a776c}
 
 <main class="wrap">
 <div class="banner" id="banner">
- <div class="slide s1 on"><div><div class="hero-kicker">FRESH <b>•</b> HOT <b>•</b> ON TIME</div><h1>Tea, Coffee &amp;<br>Snacks at <b>Your Office</b></h1><p>Fresh beverages and tasty snacks delivered directly to your workspace.</p><a class="btn" data-go="tea">Order Now</a> <a class="btn hero-outline" data-go="snacks">Explore Menu</a><div class="hero-joke">☕ Tea break? You deserve it. 😎</div></div><div class="art" id="ba1"><span class="ph"><img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=900&q=85" alt="Fresh tea"></span><button class="up" data-u="b1">📷 Photo</button></div></div>
- <div class="slide s2"><div><div class="hero-kicker">CRUNCHY <b>•</b> FRESH <b>•</b> DELICIOUS</div><h1>Snack o’clock<br>is the <b>best time</b></h1><p>Kerala favourites and office-time treats, freshly served whenever cravings call.</p><a class="btn" data-go="snacks">Explore Snacks</a><div class="hero-joke">🥟 Calories don’t count at work. Right?</div></div><div class="art" id="ba2"><span class="ph"><img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=85" alt="Indian snacks"></span><button class="up" data-u="b2">📷 Photo</button></div></div>
- <div class="slide s3"><div><div class="hero-kicker">MADE FOR YOUR TEAM</div><h1>One order.<br><b>Happy office.</b></h1><p>Everyone orders from their own device. Your team totals update live.</p><a class="btn" data-go="totals">View Team Orders</a><div class="hero-joke">😋 Meetings are better with snacks.</div></div><div class="art" id="ba3"><span class="ph"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=900&q=85" alt="Coffee cup"></span><button class="up" data-u="b3">📷 Photo</button></div></div>
+ <div class="slide s1 on"><div><h1>Fresh <b>Tea &amp; Coffee</b><br>at your desk</h1><p>Hot, strong, light or without sugar. Pick yours in seconds.</p><a class="btn" data-go="tea">Order a drink</a></div><div class="art" id="ba1"><span class="ph">🍵</span><button class="up" data-u="b1">📷 Photo</button></div></div>
+ <div class="slide s2"><div><h1>Crispy <b>Snacks</b><br>every evening</h1><p>Samosa, ullivada, parippuvada, puffs and many more, served hot.</p><a class="btn" data-go="snacks">Order snacks</a></div><div class="art" id="ba2"><span class="ph">🥟</span><button class="up" data-u="b2">📷 Photo</button></div></div>
+ <div class="slide s3"><div><h1>One list for the <b>whole office</b></h1><p>Everyone orders from their own device. Totals update live for the team.</p><a class="btn" data-go="totals">See totals</a></div><div class="art" id="ba3"><span class="ph">☕</span><button class="up" data-u="b3">📷 Photo</button></div></div>
  <div class="dots"><i class="on"></i><i></i><i></i></div>
 </div>
 
@@ -234,7 +131,6 @@ footer{color:#8a776c}
 
 <script>
 // ✏️ Edit names, emoji and prices here (₹)
-const PHOTO_MAP={"tea0":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea1":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea2":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea3":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea4":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","tea5":"https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1000&q=88","cof0":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof1":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof2":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof3":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof4":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","cof5":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=88","sn0":"https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1000&q=88","sn1":"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1000&q=88","sn2":"https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=1000&q=88","sn3":"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=1000&q=88","sn4":"https://images.unsplash.com/photo-1623334044303-241021148842?auto=format&fit=crop&w=1000&q=88","sn5":"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1000&q=88","sn6":"https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=1000&q=88","sn7":"https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=1000&q=88","sn8":"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=1000&q=88"};
 const ITEMS=[
  ...[["Normal Tea",10],["Light Tea",10],["Strong Tea",12],["Tea Without Sugar",10],["Light Tea Without Sugar",10],["Strong Tea Without Sugar",12]].map(([n,p],i)=>({id:"tea"+i,n,p,c:"Tea",e:"🍵"})),
  ...[["Normal Coffee",15],["Light Coffee",15],["Strong Coffee",18],["Coffee Without Sugar",15],["Light Coffee Without Sugar",15],["Strong Coffee Without Sugar",18]].map(([n,p],i)=>({id:"cof"+i,n,p,c:"Coffee",e:"☕"})),
@@ -254,7 +150,7 @@ const fixNum=x=>{const d=x.replace(/\D/g,"");return d.length==10?"91"+d:d};
 function openLink(u,blank){const a=document.createElement("a");a.href=u;if(blank){a.target="_blank";a.rel="noopener"}document.body.appendChild(a);a.click();a.remove()}
 const wa=(n,t)=>openLink("https://wa.me/"+n+"?text="+encodeURIComponent(t),true);
 
-function card(it){return `<div class="card" id="c-${it.id}"><div class="pic" id="p-${it.id}"><span class="ph"><img src="${PHOTO_MAP[it.id]}" alt="${it.n}" loading="lazy"></span><button class="up" data-u="${it.id}">📷 Photo</button></div><div class="info"><div class="nm">${it.n}</div>
+function card(it){return `<div class="card" id="c-${it.id}"><div class="pic" id="p-${it.id}"><span class="ph">${it.e}</span><button class="up" data-u="${it.id}">📷 Photo</button></div><div class="info"><div class="nm">${it.n}</div>
 <div class="row"><span class="pr">₹${it.p}</span><span class="tot" id="t-${it.id}"></span></div><div id="a-${it.id}"></div></div></div>`}
 $("#g-drinks").innerHTML=ITEMS.filter(i=>i.c!="Snacks").map(card).join("");
 $("#g-snacks").innerHTML=ITEMS.filter(i=>i.c=="Snacks").map(card).join("");
@@ -292,8 +188,8 @@ function render(){
  $("#people").textContent=ppl.length?"Ordered by: "+ppl.map(o=>o.name).join(", "):"";
 }
 $("#bcancel").onclick=async()=>{cart={};placed=false;render();if(db)try{await db.collection("ws/"+SLUG+"/orders").doc(today+"_"+myId).delete()}catch(e){}};
-function setPics(){ITEMS.forEach(i=>{const u=images[i.id];if(u)$("#p-"+i.id+" .ph").innerHTML=`<img src="/_blob/${u}" alt="${i.n}">`;});
- [1,2,3].forEach(n=>{const u=images["b"+n];if(u)$("#ba"+n+" .ph").innerHTML=`<img src="/_blob/${u}" alt="Banner image">`})}
+function setPics(){ITEMS.forEach(i=>{const u=images[i.id];$("#p-"+i.id+" .ph").innerHTML=u?`<img src="/_blob/${u}" alt="${i.n}">`:i.e});
+ [1,2,3].forEach(n=>{const u=images["b"+n];$("#ba"+n+" .ph").innerHTML=u?`<img src="/_blob/${u}" alt="">`:BE[n-1]})}
 const fi=document.createElement("input");fi.type="file";fi.accept="image/*";
 document.addEventListener("click",e=>{const b=e.target.closest("[data-u]");if(b&&asset){upKey=b.dataset.u;fi.value="";fi.click()}});
 fi.onchange=async()=>{const f=fi.files[0];if(!f||!asset||!db)return;try{const r=await asset.upload(f);images={...images,[upKey]:r.id};await db.doc("config/images").set(images);setPics()}catch(e){alert("Photo upload failed. Please try again.")}};
