@@ -63,7 +63,7 @@ body.ed .up{display:block}
 .mb .btn{display:block;width:100%;text-align:center;margin-top:8px}.mb .wa{background:#25d366}
 a[data-go]{cursor:pointer}
 .dd{background:#101010;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px;font-size:13px}.dd summary{cursor:pointer;line-height:1.6}.dd .cancel{margin-top:6px}
-.adm{display:none}body.isadm .adm{display:inline-block}.admbox{display:none}body.isadm .admbox{display:block}
+.adm{display:none}body.isadm .adm{display:inline-block}.admbox{display:none}body.isadm .admbox{display:block}body.isadm .admbox.rv{opacity:1;transform:none}
 .at{width:100%;border-collapse:collapse;font-size:13px;min-width:460px}.at th,.at td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}.at th{color:var(--y)}.abtn{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.swb{display:none}body.isowner .swb{display:inline-block}
 /* totals */
 .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
@@ -83,8 +83,8 @@ input{background:#101010;border:1px solid var(--line);color:#fff;border-radius:1
 .rv{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
 .msg{color:var(--mut);font-size:12px;margin-top:8px}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
-@media(max-width:860px){.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr);gap:12px}.big{grid-template-columns:repeat(2,1fr)}.slide{padding:24px 20px}.pic{height:100px;font-size:52px}header a{display:none}}
-@media(max-width:480px){.art{font-size:80px}.slide p{font-size:13px}}
+@media(max-width:860px){.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.big{grid-template-columns:repeat(2,1fr)}.slide{padding:24px 20px}.pic{height:100px;font-size:52px}header .wrap{gap:10px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}header .wrap::-webkit-scrollbar{display:none}header a{display:inline-flex;flex:0 0 auto}.logo{flex:0 0 auto}#cnt{flex:0 0 auto}}
+@media(max-width:560px){.wrap{padding:0 12px}.banner{min-height:260px;margin:12px 0;border-radius:16px}.slide{padding:22px 16px 36px;gap:8px}.slide h1{font-size:clamp(24px,7vw,34px);max-width:72%;line-height:1.12}.slide p{font-size:12px;line-height:1.45;max-width:72%;margin-bottom:12px}.slide .btn{font-size:12px;padding:9px 13px}.art{font-size:clamp(60px,19vw,100px);position:absolute;right:14px;bottom:28px}.art img{width:34vw;height:28vw;max-width:130px;max-height:110px;object-fit:cover}.dots{bottom:10px}.grid{gap:9px}.pic{height:112px}.info{padding:10px;gap:8px}.nm{font-size:13px}.ctl{gap:4px}.ctl button{width:30px;height:30px}.panel{padding:14px}section{padding:24px 0}h2{font-size:22px}footer{padding-bottom:100px}}@media(max-width:380px){.banner{min-height:235px}.slide h1{font-size:23px}.slide p{max-width:68%}.art img{width:31vw;height:27vw}.logo{font-size:15px}}
 </style></head><body>
 <div class="md on" id="gate"><div class="mb"><h2>Your company <span>workspace</span></h2>
 <p class="sub" id="gs">Enter your company name or code to join. A new name creates a new workspace.</p>
@@ -232,7 +232,7 @@ const slugOf=t=>t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""
 async function getWs(slug){try{const x=await db.doc("ws/"+slug).get();return x&&x.data&&x.data()||null}catch(e){return null}}
 function enter(slug){if(entered)return;entered=true;SLUG=slug;
  try{localStorage.setItem("ots-ws",slug)}catch(e){}try{location.hash=slug}catch(e){}
- db.doc("ws/"+slug).onSnapshot(x=>{WS=x.data&&x.data()||null;if(WS){$("#logo").textContent="☕ "+WS.name;isOwn=WS.admin===myId;applyRole();{const ai=$("#admph");if(ai&&document.activeElement!==ai)ai.value=WS.phone?WS.phone.replace(/^91/,""):""}
+ db.doc("ws/"+slug).onSnapshot(x=>{WS=x.data&&x.data()||null;if(WS){$("#logo").textContent="☕ "+WS.name;isOwn=String(WS.admin??"")===String(myId??"");applyRole();{const ai=$("#admph");if(ai&&document.activeElement!==ai)ai.value=WS.phone?WS.phone.replace(/^91/,""):""}
   $("#closeb").textContent=WS.closed===today?"Reopen today’s orders":"Close today’s orders"}render()},()=>{});
  let first=true;
  db.collection("ws/"+slug+"/orders").onSnapshot(snap=>{allOrders=snap.docs.map(x=>x.data());orders={};allOrders.filter(o=>o.day==today).forEach(o=>orders[o.uid]=o);
