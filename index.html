@@ -85,7 +85,8 @@ input{background:#101010;border:1px solid var(--line);color:#fff;border-radius:1
 footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
 @media(max-width:860px){.two{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.big{grid-template-columns:repeat(2,1fr)}.slide{padding:24px 20px}.pic{height:100px;font-size:52px}header .wrap{gap:10px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}header .wrap::-webkit-scrollbar{display:none}header a{display:inline-flex;flex:0 0 auto}.logo{flex:0 0 auto}#cnt{flex:0 0 auto}}
 @media(max-width:560px){.wrap{padding:0 12px}.banner{min-height:260px;margin:12px 0;border-radius:16px}.slide{padding:22px 16px 36px;gap:8px}.slide h1{font-size:clamp(24px,7vw,34px);max-width:72%;line-height:1.12}.slide p{font-size:12px;line-height:1.45;max-width:72%;margin-bottom:12px}.slide .btn{font-size:12px;padding:9px 13px}.art{font-size:clamp(60px,19vw,100px);position:absolute;right:14px;bottom:28px}.art img{width:34vw;height:28vw;max-width:130px;max-height:110px;object-fit:cover}.dots{bottom:10px}.grid{gap:9px}.pic{height:112px}.info{padding:10px;gap:8px}.nm{font-size:13px}.ctl{gap:4px}.ctl button{width:30px;height:30px}.panel{padding:14px}section{padding:24px 0}h2{font-size:22px}footer{padding-bottom:100px}}@media(max-width:380px){.banner{min-height:235px}.slide h1{font-size:23px}.slide p{max-width:68%}.art img{width:31vw;height:27vw}.logo{font-size:15px}}
-</style></head><body>
+</style><script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.1/dist/umd/supabase.js"></script>
+</head><body>
 <div class="md on" id="gate"><div class="mb"><h2>Your company <span>workspace</span></h2>
 <p class="sub" id="gs">Enter your company name or code to join. A new name creates a new workspace.</p>
 <input id="wsname" placeholder="Company name or code, e.g. Acme Foods" maxlength="40">
@@ -137,10 +138,11 @@ const ITEMS=[
  ...[["Samosa",12,"🥟"],["Pazham Pori",12,"🍌"],["Ullivada",10,"🧅"],["Masala Bonda",10,"🥔"],["Puffs",20,"🥐"],["Parippuvada",10,"🍘"],["Sugiyan",10,"🟤"],["Pattiri",15,"🥘"],["Kayabaji",12,"🍠"]].map(([n,p,e],i)=>({id:"sn"+i,n,p,c:"Snacks",e}))
 ];
 const $=s=>document.querySelector(s);
-let cart={},orders={},myId="local",db=null,placed=false,images={},asset=null,upKey=null,SLUG="",WS=null,allOrders=[],lastH="",entered=false,asUser=false,isOwn=false;function applyRole(){document.body.classList.toggle("isowner",isOwn);document.body.classList.toggle("isadm",isOwn&&!asUser);const b=document.getElementById("sw");if(b)b.textContent=asUser?"Switch to admin view":"Switch to user view"}
+let cart={},orders={},myId="local",db=null,placed=false,images={},upKey=null,SLUG="",WS=null,allOrders=[],lastH="",entered=false,asUser=false,isOwn=false;function applyRole(){document.body.classList.toggle("ed",isOwn&&!asUser);document.body.classList.toggle("isowner",isOwn);document.body.classList.toggle("isadm",isOwn&&!asUser);const b=document.getElementById("sw");if(b)b.textContent=asUser?"Switch to admin view":"Switch to user view"}
 function dayStr(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-const today=dayStr(new Date());const OFFICE="916238160816",BE=["🍵","🥟","☕"];
+const today=dayStr(new Date());
+const recentDays=[0,1,2].map(offset=>{const date=new Date();date.setDate(date.getDate()-offset);return dayStr(date)});const OFFICE="916238160816",BE=["🍵","🥟","☕"];
 const safe=s=>{try{return localStorage.getItem(s)||""}catch(e){return ""}};
 $("#name").value=safe("ots-name");
 $("#phone").value=safe("ots-phone");
@@ -183,16 +185,49 @@ function render(){
  const h=histHtml();if(h!==lastH){lastH=h;$("#hl").innerHTML=h}
  let gt=0;const SM=sums(orders);const sumHtml='<div class="tg">'+ITEMS.filter(i=>SM.s[i.id]).map(i=>"<div>"+i.n+"<b>"+SM.s[i.id]+"</b></div>").join("")+"</div>";const A=Object.values(orders).map(o=>{let a=0;const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{a+=o.items[i.id]*i.p;return o.items[i.id]+" "+i.n}).join(", ");gt+=a;const tm=o.at?new Date(o.at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";return "<tr><td>"+esc(o.name||"?")+"</td><td>"+tm+"</td><td>"+esc(t)+"</td><td>₹"+a+"</td></tr>"}).join("");
  $("#al").innerHTML=A?'<table class="at"><tr><th>Username</th><th>Time</th><th>Order</th><th>Amount</th></tr>'+A+'<tr><td colspan="3"><b>Grand total</b></td><td><b>₹'+gt+'</b></td></tr></table>'+'<div class="msg" style="margin:10px 0 4px">'+Object.keys(orders).length+' people ordered · Tea '+SM.c.Tea+' · Coffee '+SM.c.Coffee+' · Snacks '+SM.c.Snacks+'</div>'+sumHtml:'<div class="msg">No orders yet today.</div>'
- if(db&&WS)$("#live").textContent=(WS.closed===today?"🔒 Orders closed for today · ":"")+"Workspace code: "+SLUG+" · live totals for today";
+ if(db&&WS)$("#live").textContent=(WS.closed===today?"🔒 Orders closed for today · ":"")+"Workspace code: "+SLUG;
  const ppl=Object.values(orders).filter(o=>o.name);
  $("#people").textContent=ppl.length?"Ordered by: "+ppl.map(o=>o.name).join(", "):"";
 }
-$("#bcancel").onclick=async()=>{cart={};placed=false;render();if(db)try{await db.collection("ws/"+SLUG+"/orders").doc(today+"_"+myId).delete()}catch(e){}};
-function setPics(){ITEMS.forEach(i=>{const u=images[i.id];$("#p-"+i.id+" .ph").innerHTML=u?`<img src="/_blob/${u}" alt="${i.n}">`:i.e});
- [1,2,3].forEach(n=>{const u=images["b"+n];$("#ba"+n+" .ph").innerHTML=u?`<img src="/_blob/${u}" alt="">`:BE[n-1]})}
-const fi=document.createElement("input");fi.type="file";fi.accept="image/*";
-document.addEventListener("click",e=>{const b=e.target.closest("[data-u]");if(b&&asset){upKey=b.dataset.u;fi.value="";fi.click()}});
-fi.onchange=async()=>{const f=fi.files[0];if(!f||!asset||!db)return;try{const r=await asset.upload(f);images={...images,[upKey]:r.id};await db.doc("config/images").set(images);setPics()}catch(e){alert("Photo upload failed. Please try again.")}};
+$("#bcancel").onclick=async()=>{
+ try{
+  if(db) await result(db.from("ots_orders").delete().match({slug:SLUG,day:today,uid:myId}));
+  cart={};placed=false;render();
+  if(db) await refreshWorkspace();
+ }catch(error){alert("Could not cancel the order. Please try again.")}
+};
+function setPics(){
+ for(const [id,selector,fallback] of [
+  ...ITEMS.map(it=>[it.id,"#p-"+it.id+" .ph",it.e]),
+  ...[1,2,3].map(n=>["b"+n,"#ba"+n+" .ph",BE[n-1]])
+ ]){
+  const el=$(selector), src=images[id];
+  if(!src){el.textContent=fallback;continue}
+  const img=document.createElement("img");
+  img.src=src;img.alt="";
+  el.replaceChildren(img);
+ }
+}
+const fi=document.createElement("input");fi.type="file";fi.accept="image/png,image/jpeg,image/webp,image/gif";
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-u]");
+ if(b&&db&&isOwn&&!asUser){upKey=b.dataset.u;fi.value="";fi.click()}
+});
+fi.onchange=async()=>{
+ const file=fi.files[0], item=upKey;
+ if(!file||!db||!isOwn||asUser)return;
+ if(file.size>500000||!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){
+  alert("Choose a PNG, JPEG, WebP, or GIF under 500 KB.");return;
+ }
+ try{
+  const src=await new Promise((resolve,reject)=>{
+   const reader=new FileReader();reader.onload=()=>resolve(reader.result);
+   reader.onerror=()=>reject(reader.error);reader.readAsDataURL(file);
+  });
+  await result(db.rpc("ots_save_photo",{code:SLUG,photo_item:item,photo_src:src}));
+  images[item]=src;setPics();
+ }catch(error){alert("Photo upload failed. Please try again.")}
+};
 function receipt(){const nm=$("#name").value.trim(),ph=$("#phone").value.trim();
  const L=ITEMS.filter(i=>cart[i.id]).map(i=>"• "+cart[i.id]+" × "+i.n+" = ₹"+cart[i.id]*i.p);
  const amt=ITEMS.reduce((a,i)=>a+(cart[i.id]||0)*i.p,0);
@@ -202,9 +237,18 @@ $("#bplace").onclick=async()=>{
  if(!nm){$("#who").scrollIntoView({behavior:"smooth"});alert("Please enter your username first.");return}
  if(WS&&WS.closed===today&&(WS.admin!==myId||asUser)){alert("Orders are closed for today.");return}
  if(allOrders.some(o=>o.uid!==myId&&(o.name||"").toLowerCase()===nm.toLowerCase())){alert("This username is already taken by someone else. Please choose a different one.");return}
+ const r=receipt(), button=$("#bplace");
+ if(!Object.keys(cart).length){alert("Select at least one item.");return}
+ button.disabled=true;
+ try{
+  if(db) await result(db.rpc("ots_save_order",{
+   code:SLUG,order_day:today,customer:nm,number:ph,quantities:cart,ordered_at:Date.now()
+  }));
+ }catch(error){
+  alert("Could not save the order. Check whether orders are open and try again.");return;
+ }finally{button.disabled=false}
  placed=true;render();
- if(db)try{await db.collection("ws/"+SLUG+"/orders").doc(today+"_"+myId).set({uid:myId,day:today,name:nm,phone:ph,items:cart,at:Date.now()})}catch(e){$("#live").textContent="Could not save order. Please try again."}
- const r=receipt();$("#rc").innerHTML=r.L.join("<br>")+"<br><b>Total: ₹"+r.amt+"</b>";$("#mt").textContent=r.amt;
+ if(db) refreshWorkspace();$("#rc").innerHTML=r.L.join("<br>")+"<br><b>Total: ₹"+r.amt+"</b>";$("#mt").textContent=r.amt;
  $("#upi").onclick=()=>openLink("upi://pay?pa=jinshadk007@okicici&pn=Jinshad%20K&cu=INR&am="+r.amt+"&tn=Office%20snacks");
  
  $("#md").classList.add("on")};
@@ -215,36 +259,118 @@ function totalsText(list,day){const {s,c}=sums(list);
  return "*"+(WS?WS.name:"Office")+" order totals – "+day+"*\n\n*Tea total: "+c.Tea+"*\n"+line("Tea")+"\n\n*Coffee total: "+c.Coffee+"*\n"+line("Coffee")+"\n\n*Snacks total: "+c.Snacks+"*\n"+line("Snacks")+"\n\n*Who ordered*\n"+ppl.join("\n")+"\n\n*Grand total: ₹"+amt+"*"}
 const sendTo=()=>fixNum(WS&&WS.phone||OFFICE);
 $("#sendtot").onclick=()=>wa(sendTo(),totalsText(allOrders.filter(o=>o.day==today),today));
-function histHtml(){return [0,1,2].map(n=>{const day=dayStr(new Date(Date.now()-n*864e5)),L=allOrders.filter(o=>o.day==day),{c}=sums(L);let amt=0;
+function histHtml(){return [0,1,2].map(n=>{const day=recentDays[n],L=allOrders.filter(o=>o.day==day),{c}=sums(L);let amt=0;
  L.forEach(o=>Object.entries(o.items||{}).forEach(([id,q])=>{const it=ITEMS.find(x=>x.id==id);if(it)amt+=q*it.p}));
  const lines=L.map(o=>"• "+esc(o.name||"?")+": "+ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>o.items[i.id]+" "+i.n).join(", ")).join("<br>")||"No orders";
  return `<details class="dd"><summary><b>${n==0?"Today":n==1?"Yesterday":day}</b> · ${L.length} orders · ₹${amt} · Tea ${c.Tea} · Coffee ${c.Coffee} · Snacks ${c.Snacks}</summary><div class="rc">${lines}</div><button class="cancel adm" data-h="${day}">Send this list to WhatsApp</button></details>`}).join("")}
 document.addEventListener("click",e=>{
  const g=e.target.closest("[data-go]");if(g){const t=document.getElementById(g.dataset.go);if(t)t.scrollIntoView({behavior:"smooth"});return}
  const h=e.target.closest("[data-h]");if(h)wa(sendTo(),totalsText(allOrders.filter(o=>o.day==h.dataset.h),h.dataset.h))});
-$("#admsave").onclick=async()=>{const ph=fixNum($("#admph").value);if(ph.length<12){alert("Enter a valid 10-digit WhatsApp number.");return}try{await db.doc("ws/"+SLUG).update({phone:ph});alert("Number saved.")}catch(e){alert("Could not save the number. Please try again.")}};
+async function result(request){
+ const {data,error}=await request;
+ if(error)throw error;
+ return data;
+}
+async function updateWorkspace(changes){
+ const updated=await result(db.from("ots_workspaces").update(changes).eq("slug",SLUG).select().single());
+ appliedRefreshId=++refreshId;
+ showWorkspace(updated);
+}
+$("#admsave").onclick=async()=>{
+ const ph=fixNum($("#admph").value);
+ if(ph.length<12){alert("Enter a valid 10-digit WhatsApp number.");return}
+ try{await updateWorkspace({phone:ph});alert("Number saved.")}
+ catch(error){alert("Could not save the number. Please try again.")}
+};
 $("#sw").onclick=()=>{asUser=!asUser;applyRole()};
-$("#closeb").onclick=()=>{if(db&&WS)db.doc("ws/"+SLUG).update({closed:WS.closed===today?"":today}).catch(()=>{})};
-$("#reset").onclick=async()=>{if(!db||!confirm("Delete ALL of today’s orders?"))return;
- for(const uid of Object.keys(orders))try{await db.collection("ws/"+SLUG+"/orders").doc(today+"_"+uid).delete()}catch(e){}
- cart={};placed=false;render()};
-const slugOf=t=>t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,30);
-async function getWs(slug){try{const x=await db.doc("ws/"+slug).get();return x&&x.data&&x.data()||null}catch(e){return null}}
-function enter(slug){if(entered)return;entered=true;SLUG=slug;
- try{localStorage.setItem("ots-ws",slug)}catch(e){}try{location.hash=slug}catch(e){}
- db.doc("ws/"+slug).onSnapshot(x=>{WS=x.data&&x.data()||null;if(WS){$("#logo").textContent="☕ "+WS.name;isOwn=String(WS.admin??"")===String(myId??"");applyRole();{const ai=$("#admph");if(ai&&document.activeElement!==ai)ai.value=WS.phone?WS.phone.replace(/^91/,""):""}
-  $("#closeb").textContent=WS.closed===today?"Reopen today’s orders":"Close today’s orders"}render()},()=>{});
- let first=true;
- db.collection("ws/"+slug+"/orders").onSnapshot(snap=>{allOrders=snap.docs.map(x=>x.data());orders={};allOrders.filter(o=>o.day==today).forEach(o=>orders[o.uid]=o);
-  if(first&&orders[myId]){cart={...(orders[myId].items||{})};placed=true;if(!$("#name").value)$("#name").value=orders[myId].name||"";if(!$("#phone").value)$("#phone").value=orders[myId].phone||""}
-  first=false;render()},()=>{$("#live").textContent="Could not load shared totals."});
- $("#gate").classList.remove("on")}
-$("#wsgo").onclick=async()=>{const nm=$("#wsname").value.trim(),slug=slugOf(nm);if(!slug)return;
- if(!db){$("#gs").textContent="Still connecting. Please wait a moment and try again.";return}
- if(await getWs(slug)){enter(slug);return}
- if($("#gnew").style.display=="none"){$("#gnew").style.display="block";$("#gs").textContent="No workspace found for “"+nm+"”. Add your WhatsApp number below to create it. You will be the admin.";return}
- const ph=fixNum($("#wsphone").value);if(ph.length<12){alert("Enter the WhatsApp number that receives the final order list.");return}
- try{await db.doc("ws/"+slug).set({name:nm,admin:myId,phone:ph,created:Date.now()});enter(slug)}catch(e){alert("Could not create the workspace. Please try again.")}};
+$("#closeb").onclick=async()=>{
+ if(!db||!WS)return;
+ try{await updateWorkspace({closed:WS.closed===today?null:today})}
+ catch(error){alert("Could not change whether orders are open.")}
+};
+$("#reset").onclick=async()=>{
+ if(!db||!isOwn||!confirm("Delete ALL of today’s orders?"))return;
+ try{
+  await result(db.from("ots_orders").delete().match({slug:SLUG,day:today}));
+  cart={};placed=false;render();await refreshWorkspace();
+ }catch(error){alert("Could not reset the orders. Please try again.")}
+};
+function showWorkspace(workspace){
+ WS=workspace;
+ $("#logo").textContent="☕ "+WS.name;
+ isOwn=WS.admin===myId;applyRole();
+ if(document.activeElement!==$("#admph"))$("#admph").value=WS.phone.replace(/^91/,"");
+ $("#closeb").textContent=WS.closed===today?"Reopen today’s orders":"Close today’s orders";
+ render();
+}
+let refreshId=0, appliedRefreshId=0;
+async function refreshWorkspace(restoreOrder=false){
+ const requestId=++refreshId;
+ try{
+  const [workspace,rows]=await Promise.all([
+   result(db.from("ots_workspaces").select().eq("slug",SLUG).single()),
+   result(db.from("ots_orders").select("day,uid,name,phone,items,at").eq("slug",SLUG).in("day",recentDays))
+  ]);
+  if(requestId<appliedRefreshId)return;
+  appliedRefreshId=requestId;
+  allOrders=rows.map(order=>({...order,items:Object.fromEntries(ITEMS
+   .filter(it=>Number.isSafeInteger(order.items[it.id])&&order.items[it.id]>0)
+   .map(it=>[it.id,order.items[it.id]]))}));
+  orders=Object.fromEntries(allOrders.filter(order=>order.day===today).map(order=>[order.uid,order]));
+  if(restoreOrder&&orders[myId]){
+   const own=orders[myId];
+   cart={...own.items};placed=true;
+   if(!$("#name").value)$("#name").value=own.name;
+   if(!$("#phone").value)$("#phone").value=own.phone;
+  }
+  showWorkspace(workspace);
+ }catch(error){
+  if(requestId===refreshId)$("#live").textContent="Could not load shared totals. Retrying…";
+ }
+}
+async function enter(slug){
+ if(entered)return;
+ entered=true;SLUG=slug;
+ try{localStorage.setItem("ots-ws",slug);location.hash=slug}catch(error){}
+ await refreshWorkspace(true);
+ $("#gate").classList.remove("on");
+ setInterval(refreshWorkspace,5000);
+ try{
+  const photos=await result(db.from("ots_photos").select("item,src").eq("slug",slug));
+  images=Object.fromEntries(photos.map(photo=>[photo.item,photo.src]));setPics();
+ }catch(error){console.error("Could not load workspace photos",error)}
+}
+let pendingName="";
+$("#wsname").oninput=()=>{
+ pendingName="";$("#gnew").style.display="none";
+ $("#gs").textContent="Enter an invite code to join, or enter your company name to create a workspace.";
+};
+$("#wsgo").onclick=async()=>{
+ const nm=$("#wsname").value.trim(),button=$("#wsgo");
+ if(!nm)return;
+ button.disabled=true;
+ try{
+  if(/^[a-f0-9]{32}$/i.test(nm)){
+   await connect();
+   const code=nm.toLowerCase();
+   if(await result(db.rpc("ots_open_workspace",{code})))await enter(code);
+   else $("#gs").textContent="Workspace code not found. Check the code and try again.";
+   return;
+  }
+  if(pendingName!==nm){
+   pendingName=nm;$("#gnew").style.display="block";
+   $("#gs").textContent="Enter a WhatsApp number to create “"+nm+"” and become its admin.";
+   return;
+  }
+  const whatsapp=fixNum($("#wsphone").value);
+  if(whatsapp.length<12){alert("Enter the WhatsApp number that receives the final order list.");return}
+  await connect();
+  const code=Array.from(crypto.getRandomValues(new Uint8Array(16)),byte=>byte.toString(16).padStart(2,"0")).join("");
+  await result(db.rpc("ots_open_workspace",{code,title:nm,whatsapp}));
+  await enter(code);
+ }catch(error){$("#gs").textContent=connectionMessage(error)}
+ finally{button.disabled=false}
+};
 // banner
 const sl=[...document.querySelectorAll(".slide")],dt=[...document.querySelectorAll(".dots i")];let k=0,tm;
 function go(n){k=n;sl.forEach((s,i)=>s.classList.toggle("on",i==k));dt.forEach((d,i)=>d.classList.toggle("on",i==k))}
@@ -255,14 +381,33 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 document.querySelectorAll(".rv").forEach(x=>io.observe(x));
 render();
 
-// connect
-(async()=>{try{
- const user=await claude.use("user"),d=await claude.use("db");
- if(!d||!user){$("#gate").classList.remove("on");$("#live").textContent="Offline mode: totals show only your own order.";return}
- db=d;myId=await user.id();
- claude.use("assets").then(a=>{if(a){asset=a;document.body.classList.add("ed")}}).catch(()=>{});
- db.doc("config/images").onSnapshot(x=>{images=(x.data&&x.data())||{};setPics()},()=>{});
- let slug="";try{slug=location.hash.slice(1)||localStorage.getItem("ots-ws")||""}catch(e){}
- if(slug&&await getWs(slug))enter(slug);
-}catch(e){$("#gate").classList.remove("on");$("#live").textContent="Offline mode: totals show only your own order."}})();
+// The publishable key is safe to use in this static page. Database policies enforce access.
+let connection;
+function connect(){
+ if(!connection)connection=(async()=>{
+  if(!window.supabase)throw new Error("Supabase could not load. Reload the page and try again.");
+  const client=window.supabase.createClient("https://twpicuqymaqanptwwevy.supabase.co","sb_publishable_ABAY8y0kGy4qdyWEo0Ol5w_ByfsCgnU");
+  let {session}=await result(client.auth.getSession());
+  if(!session)({session}=await result(client.auth.signInAnonymously()));
+  if(!session)throw new Error("Could not start a Supabase session.");
+  myId=session.user.id;db=client;
+ })().catch(error=>{connection=null;throw error});
+ return connection;
+}
+function connectionMessage(error){
+ console.error("Workspace connection failed",error);
+ if(error.code==="anonymous_provider_disabled")return "Workspace sign-in is disabled. Ask the site admin to enable anonymous sign-ins in Supabase.";
+ return "Could not connect to the workspace. Please try again.";
+}
+window.addEventListener("DOMContentLoaded",async()=>{
+ const code=location.hash.slice(1)||safe("ots-ws");
+ if(!/^[a-f0-9]{32}$/.test(code))return;
+ const button=$("#wsgo");button.disabled=true;
+ try{
+  await connect();
+  if(await result(db.rpc("ots_open_workspace",{code})))await enter(code);
+  else $("#gs").textContent="Workspace code not found. Check the code and try again.";
+ }catch(error){$("#gs").textContent=connectionMessage(error)}
+ finally{button.disabled=false}
+});
 </script></body></html>
