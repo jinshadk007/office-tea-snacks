@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover: on iPhones the page runs under Safari's bars, which then take its colour
+         (style.css keeps the controls clear of the screen's safe areas). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <!-- The type and the album list, fetched at once rather than after the script has run. The build
+         adds a preload for each album's startup artwork here too (vite.config.ts). -->
+    <link rel="preload" href="./fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/dm-mono-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./albums/collection.json?v=purchase-history" as="fetch" crossorigin />
+    <meta name="theme-color" content="#ebe3d4" />
+    <meta name="description" content="Browse and open the Chaya Kada team's individual credit books." />
+    <title>Pattu Book</title>
+    <style>
+      body { margin: 0; background: #ebe3d4; }
+      .first-cover { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; }
+      .first-cover img { width: min(49vw, 43vh, 340px); aspect-ratio: 1; object-fit: cover; border: 2px solid #252521; box-shadow: 8px 16px 30px #25252138; transform: rotate(-6deg); }
+      .case-action.is-right { display: none !important; }
+      .gallery-ready .first-cover { display: none; }
+    </style>
+    <script type="module" crossorigin src="./assets/pattu-book.js?v=paper-turn"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DQ7ffwHb.css">
+    <link rel="modulepreload" href="./assets/pattu-book-lights.js?v=paper-turn" crossorigin>
+    <link rel="preload" as="image" href="./albums/team-member-01/cover-small.webp" type="image/webp" media="(max-width: 650px)">
+    <link rel="preload" as="image" href="./albums/team-member-01/cover.webp" type="image/webp" media="(min-width: 651px)">
+    <link rel="preload" as="image" href="./albums/team-member-02/cover.webp" type="image/webp" media="(min-width: 651px)">
+  </head>
+  <body>
+    <div class="first-cover" aria-hidden="true"><img src="./albums/team-member-01/cover-small.webp" alt=""></div>
+    <a class="corner-button landing-link is-shown" href="../../shop.html" onclick="event.stopPropagation()" aria-label="Back to landing page" title="Back to landing page">←</a>
+    <div id="root"></div>
+  </body>
+</html>

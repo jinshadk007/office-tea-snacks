@@ -1,0 +1,221 @@
+{
+  "name": "Chaya Kada",
+  "theme": {
+    "background": "#ebe3d4",
+    "backgroundCenter": "#f6f0e5",
+    "backgroundEdge": "#e1d7c5",
+    "ink": "#252521"
+  },
+  "albums": [
+    {
+      "id": "team-member-01",
+      "title": "Team Member 01",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-02",
+      "title": "Team Member 02",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-03",
+      "title": "Team Member 03",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-04",
+      "title": "Team Member 04",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-05",
+      "title": "Team Member 05",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-06",
+      "title": "Team Member 06",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-07",
+      "title": "Team Member 07",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-08",
+      "title": "Team Member 08",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-09",
+      "title": "Team Member 09",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    },
+    {
+      "id": "team-member-10",
+      "title": "Team Member 10",
+      "artist": "Chaya Kada",
+      "year": "2026",
+      "kind": "Team booklet",
+      "cover": "cover.webp",
+      "coverSmall": "cover-small.webp",
+      "back": "back.webp",
+      "bookletBack": "back.webp",
+      "bookletScans": [
+        "profile.webp",
+        "credits.webp"
+      ],
+      "bookletPageCount": 4,
+      "bookletFit": "contain",
+      "color": "#283c32",
+      "accent": "#e4af6c",
+      "motif": "lines",
+      "tracks": []
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script>
+    if (['localhost', '127.0.0.1'].includes(location.hostname)) {
+      location.replace('./demos/pattu-book/#/');
+    }
+  </script>
+  <title>Pattu Book</title>
+  <link rel="stylesheet" href="assets/shop/credits.css">
+  <script type="module" src="assets/shop/credits-fold.js"></script>
+</head>
+<body>
+  <header><a href="./shop.html#book">← Chaya Kada</a><a href="https://dmtrbrl.github.io/discography/">Discography reference ↗</a></header>
+  <main>
+    <h1>Pattu Book</h1>
+    <p>Click the book or use the arrows to turn a page.</p>
+    <div class="credit-desk"><div class="credit-stack" aria-label="Chaya Kada credits book"></div></div>
+    <div class="controls">
+      <button id="prev" type="button" disabled aria-label="Previous page">←</button>
+      <span id="page" role="status">Loading book…</span>
+      <button id="next" type="button" disabled aria-label="Next page">→</button>
+    </div>
+  </main>
+</body>
+</html>

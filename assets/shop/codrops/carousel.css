@@ -1,0 +1,99 @@
+/* Adapted from Codrops ScrollBasedLayoutAnimations. See LICENSE. */
+/* A row of whole pictures (a column on phones), which js/index.js rolls up into a ring and unrolls on scroll.
+   Every picture is placed absolutely, in both layouts, so nothing reflows while Flip changes their sizes */
+.gallery-wrap--3d {
+	perspective: 1000px;
+}
+
+.gallery--carousel {
+	/* On phones the column sits higher, clear of the caption */
+	--h: 8svh;
+	--g: 1svh;
+	--cy: calc(50% - 11svh);
+	transform-style: preserve-3d;
+}
+
+.gallery--carousel .gallery__item {
+	position: absolute;
+	left: calc(50% - var(--h) / 3);
+	top: calc(var(--cy) + (var(--k) - 3) * (var(--h) + var(--g)) - var(--h) / 2);
+	width: calc(var(--h) * 2 / 3);
+	height: var(--h);
+	filter: brightness(var(--light, 1));
+}
+
+.gallery--carousel .gallery__item:nth-child(1) { --k: 0; }
+.gallery--carousel .gallery__item:nth-child(2) { --k: 1; }
+.gallery--carousel .gallery__item:nth-child(3) { --k: 2; }
+/* The card at the front, which becomes the large picture, stays on top of the others */
+.gallery--carousel .gallery__item:nth-child(4) { --k: 3; z-index: 2; }
+.gallery--carousel .gallery__item:nth-child(5) { --k: 4; }
+.gallery--carousel .gallery__item:nth-child(6) { --k: 5; }
+.gallery--carousel .gallery__item:nth-child(7) { --k: 6; }
+
+/* Then a Flip switch: the card at the front becomes one large picture, the other six a strip of thumbnails under it */
+.gallery--switch.gallery--carousel {
+	--fh: 46svh;
+	--tw: min(7svh, (88vw - 5 * 1svh) / 6);
+	--th: calc(var(--tw) * 3 / 2);
+	--tg: 1svh;
+	--fg: 1.5svh;
+	--cy: calc(50% - 7svh);
+	--ftop: calc(var(--cy) - (var(--fh) + var(--fg) + var(--th)) / 2);
+}
+
+.gallery--switch.gallery--carousel .gallery__item {
+	left: calc(50% + (var(--j) - 2.5) * (var(--tw) + var(--tg)) - var(--tw) / 2);
+	top: calc(var(--ftop) + var(--fh) + var(--fg));
+	width: var(--tw);
+	height: var(--th);
+}
+
+.gallery--switch.gallery--carousel .gallery__item:nth-child(1) { --j: 0; }
+.gallery--switch.gallery--carousel .gallery__item:nth-child(2) { --j: 1; }
+.gallery--switch.gallery--carousel .gallery__item:nth-child(3) { --j: 2; }
+.gallery--switch.gallery--carousel .gallery__item:nth-child(5) { --j: 3; }
+.gallery--switch.gallery--carousel .gallery__item:nth-child(6) { --j: 4; }
+.gallery--switch.gallery--carousel .gallery__item:nth-child(7) { --j: 5; }
+
+.gallery--switch.gallery--carousel .gallery__item:nth-child(4) {
+	left: calc(50% - var(--fh) / 3);
+	top: var(--ftop);
+	width: calc(var(--fh) * 2 / 3);
+	height: var(--fh);
+}
+
+/* With the feature view: under the thumbnails on phones, beside the large picture on desktop */
+.gallery--carousel .caption {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	padding: 4.5vw;
+	max-width: 730px;
+}
+
+@media (min-width:53em) {
+	/* A row on desktop, its cards a little squarer than the pictures (about 166 by 219px on a 1500px wide screen); they become 2:3 in the feature view */
+	.gallery--carousel .gallery__item {
+		--w: 11vw;
+		left: calc(50% + (var(--k) - 3) * (var(--w) + 2vw) - var(--w) / 2);
+		top: calc(50% - var(--w) * 0.66);
+		width: var(--w);
+		height: calc(var(--w) * 1.32);
+	}
+	.gallery--switch.gallery--carousel {
+		--fh: 56svh;
+		--tw: 8svh;
+		--cy: 50%;
+	}
+	.gallery--carousel .caption {
+		/* Right of the large picture, which is 56svh tall and so about 19svh to each side of the middle */
+		left: calc(50% + 19svh + 3vw);
+		bottom: 45%;
+		width: auto;
+		right: 0;
+		padding: 0 4.5vw 0 0;
+		max-width: 520px;
+	}
+}

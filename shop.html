@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Watch chai being poured at Chaya Kada.">
+  <title>Chaya Kada — The Kerala Tea Shop</title>
+  <script>
+    if (/^#[a-f0-9]{32}$/i.test(location.hash) || new URLSearchParams(location.search).has('demo')) {
+      location.replace('./order.html' + location.search + location.hash);
+    }
+  </script>
+  <link rel="preload" as="image" href="assets/flow-frames/chaya-adi-scroll/frame-0001.webp">
+  <link rel="stylesheet" href="assets/shop/shop.css?v=balanced-pour">
+  <script defer src="assets/shop/vendor/gsap.js"></script>
+  <script defer src="assets/shop/vendor/scroll-trigger.js"></script>
+  <script type="module" src="assets/shop/shop.js?v=balanced-pour"></script>
+  <script type="module" src="assets/shop/preload-book.js"></script>
+  <link rel="stylesheet" href="assets/credits-theme.css">
+</head>
+<body class="landing">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="top">
+    <a class="brand" href="#home" aria-label="Chaya Kada home"><span class="brand-mark" aria-hidden="true">ചാ</span><span>Chaya Kada<small>THE KERALA TEA SHOP</small></span></a>
+    <nav aria-label="Main navigation">
+      <a href="./order.html">Shop Menu</a>
+      <a href="./demos/pattu-book/#/">Pattu Book</a>
+    </nav>
+  </header>
+  <main id="main">
+    <div id="home" class="pour-track">
+      <section class="hero" aria-label="Chaya Kada chai pour">
+        <div class="pour-details">
+          <p class="pour-label">Chaya Kada</p>
+          <div class="pour-step is-current"><h1>Chaya, made fresh.</h1><p>Scroll to see how Kerala chai is pulled.</p></div>
+          <div class="pour-step"><h2>Chaya adikkal.</h2><p>A long pour gives the chai its froth.</p></div>
+          <div class="pour-step"><h2>Into the glass.</h2><p>Watch the chai fill the glass.</p></div>
+          <a class="pour-skip" href="#fresh-chai">See the finished chai ↓</a>
+        </div>
+        <div class="pour-scene">
+          <img class="hero-frame" src="assets/flow-frames/chaya-adi-scroll/frame-0001.webp" alt="A café worker prepares to pour chai" fetchpriority="high">
+          <canvas class="hero-frame hero-sequence" width="960" height="540" aria-hidden="true" hidden></canvas>
+          <img class="hero-frame hero-frame-end" src="assets/flow-frames/chaya-adi-scroll/frame-0119.webp" alt="A glass of freshly poured chai" decoding="async">
+        </div>
+      </section>
+    </div>
+    <section id="fresh-chai" class="fresh-chai" aria-labelledby="fresh-chai-title">
+      <img src="assets/shop/chaya-ready.png" alt="Chai maker holding a brass kettle beside a glass of fresh chai" width="666" height="375" loading="lazy">
+      <div class="fresh-chai-copy">
+        <h2 id="fresh-chai-title">Chaya is ready.</h2>
+        <a href="./order.html">Order tea ↗</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

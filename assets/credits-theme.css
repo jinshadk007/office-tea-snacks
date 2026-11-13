@@ -1,0 +1,85 @@
+@font-face {
+  font-family: 'DM Sans';
+  src: url('fonts/dm-sans.woff2') format('woff2');
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('fonts/instrument-serif.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('fonts/instrument-serif-italic.woff2') format('woff2');
+  font-style: italic;
+  font-display: swap;
+}
+:root {
+  --paper: #ebe3d4;
+  --paper-light: #f6f0e5;
+  --paper-edge: #e1d7c5;
+  --paper-ink: #252521;
+  --paper-muted: #62584d;
+  --paper-accent: #745334;
+  --paper-border: #c9baa6;
+  --paper-serif: 'Instrument Serif', Georgia, serif;
+  --paper-sans: 'DM Sans', Arial, sans-serif;
+  color-scheme: light;
+}
+.landing {
+  --gold: var(--paper-accent);
+  --mut: var(--paper-muted);
+  --muted: var(--paper-muted);
+  --line: var(--paper-border);
+  background: radial-gradient(ellipse at top, var(--paper-light), var(--paper));
+  color: var(--paper-ink);
+}
+.landing .top { background: #ebe3d4f5; }
+.landing .ritual, .landing .people { background: var(--paper-edge); }
+.landing .ritual-stage { background: var(--paper-light); border-color: var(--paper-border); }
+.landing .book-section, .landing .shop-gallery { background: radial-gradient(ellipse, var(--paper-light), var(--paper-edge)); }
+.landing .shop-gallery .caption { color: var(--paper-ink); }
+.landing .hero { --gold: #f2d0a3; color: var(--paper-light); }
+.landing .button, .landing .book-controls button {
+  background: var(--paper-ink);
+  border-color: var(--paper-ink);
+  color: var(--paper-light);
+}
+.landing .button:hover, .landing .book-controls button:hover { background: #4a4035; }
+.landing .brand-mark { border-color: var(--paper-border); }
+.landing .site-footer .brand { color: var(--paper-ink); }
+
+.order-page {
+  --bg: var(--paper);
+  --card: var(--paper-light);
+  --line: var(--paper-border);
+  --y: var(--paper-accent);
+  --w: var(--paper-ink);
+  --mut: var(--paper-muted);
+  background: radial-gradient(ellipse at top, var(--paper-light), var(--paper));
+  font-family: var(--paper-sans);
+}
+.order-page :is(h1, h2, .logo) { font-family: var(--paper-serif); font-weight: 400; }
+.order-page .logo { font-size: 24px; }
+.order-page h2 { font-size: clamp(30px, 4vw, 43px); }
+.order-page .slide h1 b { font-weight: 400; }
+.order-page :is(header, #bar) { background: #f6f0e5f5; }
+.order-page :is(.panel, .card, .dd, .tg div, input) { background: var(--paper-light); color: var(--paper-ink); }
+.order-page .pic { background: radial-gradient(ellipse, var(--paper-light), var(--paper-edge)); }
+.order-page .slide { background: radial-gradient(ellipse at 75% 45%, var(--paper-edge), var(--paper-light)); }
+.order-page :is(.s1,.s2,.s3) { --glow: #c8ab8755; }
+.order-page :is(.btn, .chip, .big div, .ctl button.p, .sbtn:hover, .dots .dot[aria-current="true"]) {
+  background: var(--paper-ink);
+  color: var(--paper-light);
+}
+.order-page :is(.ctl button, .xx, .dots button) {
+  background: var(--paper-edge);
+  color: var(--paper-ink);
+}
+.order-page .ctl button.p, .order-page .dots .dot[aria-current="true"] { background: var(--paper-ink); color: var(--paper-light); }
+.order-page :is(.cancel, .ctl .x) { background: #eedad2; color: #792e28; }
+.order-page .up { background: var(--paper-ink); color: var(--paper-light); }
+.order-page .mb .wa { background: #195437; color: #fff; }
+.order-page :is(button,input) { font-family: inherit; }
+.order-page .md { background: #252521a8; }
