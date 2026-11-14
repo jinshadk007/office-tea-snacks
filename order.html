@@ -71,6 +71,7 @@ a[data-go]{cursor:pointer}
 .big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .big div{background:var(--y);color:#000;border-radius:12px;padding:12px;font-weight:700;font-size:13px}
 .big b{display:block;font-size:28px}
+#name{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit;color:inherit;background:inherit}
 input{background:#101010;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px;font-size:15px;width:100%}
 /* cart bar */
 #bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#111;border-top:2px solid var(--y);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));transform:translateY(110%);transition:transform .35s}
@@ -116,12 +117,13 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
   <aside class="menu-order" aria-labelledby="order-title">
     <h2 id="order-title">Your order</h2>
     <div id="who">
-      <label for="name">Username</label>
-      <input id="name" placeholder="Enter your username" maxlength="30">
+      <label for="name">Order for</label>
+      <select id="name" required><option value="">Select your name</option></select>
       <input id="phone" type="hidden">
     </div>
     <div id="menu-cart-items" aria-live="polite"></div>
 <div id="bar"><div class="wrap"><div class="nm2"><b id="bc">0 items</b><div class="tot" id="bt"></div></div>
+<button class="cancel" id="payment" type="button" hidden>Show payment QR</button>
 <button class="cancel" id="bcancel">Cancel order</button><button class="btn" id="bplace">Place order</button></div></div>
   </aside>
 </div>
@@ -137,7 +139,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
  </div>
 </div>
 
-<section id="admin" class="rv admbox"><div class="panel" style="border-color:var(--y)"><h2>Admin <span>panel</span></h2><p class="sub">All of today’s orders by username. When everyone has ordered, close orders and send the list on WhatsApp.</p><div style="overflow-x:auto" id="al"></div><div class="two" style="grid-template-columns:1fr auto;margin-top:14px"><input id="admph" type="tel" inputmode="tel" placeholder="WhatsApp number to receive orders"><button class="btn adm" id="admsave">Save number</button></div><div class="abtn"><button class="btn adm" id="sendtot">Send total list to WhatsApp</button><button class="cancel adm" id="closeb">Close today’s orders</button><button class="cancel adm" id="reset">Clear today’s orders</button></div></div></section>
+<section id="admin" class="rv admbox"><div class="panel" style="border-color:var(--y)"><h2>Admin <span>panel</span></h2><p class="sub">All of today’s orders by team member. When everyone has ordered, close orders and send the list on WhatsApp.</p><div style="overflow-x:auto" id="al"></div><div class="two" style="grid-template-columns:1fr auto;margin-top:14px"><input id="admph" type="tel" inputmode="tel" placeholder="WhatsApp number to receive orders"><button class="btn adm" id="admsave">Save number</button></div><div class="abtn"><button class="btn adm" id="sendtot">Send total list to WhatsApp</button><button class="cancel adm" id="closeb">Close today’s orders</button><button class="cancel adm" id="reset">Clear today’s orders</button></div></div></section>
 <section id="totals" class="rv"><div class="panel"><h2>Total <span>Orders</span></h2>
 <p class="sub" id="live">Counting everyone’s orders…</p>
 <div class="big" id="big"></div><div class="tg" id="tg"></div>
@@ -172,7 +174,19 @@ function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;","
 const today=dayStr(new Date());
 const recentDays=[0,1,2].map(offset=>{const date=new Date();date.setDate(date.getDate()-offset);return dayStr(date)});const OFFICE="916238160816",BE=["🍵","🥟","☕"];
 const safe=s=>{try{return localStorage.getItem(s)||""}catch(e){return ""}};
-$("#name").value=safe("ots-name");
+const memberSelect=$("#name");
+let orderedMember="";
+for(let member=1;member<=10;member++){
+ const label="Team Member "+String(member).padStart(2,"0");
+ memberSelect.add(new Option(label,label));
+}
+memberSelect.value=safe("ots-name");
+function restoreMember(name){
+ if(!Array.from(memberSelect.options).some(option=>option.value===name)){
+  memberSelect.add(new Option(name,name));
+ }
+ memberSelect.value=name;
+}
 $("#phone").value=safe("ots-phone");
 $("#name").oninput=e=>{try{localStorage.setItem("ots-name",e.target.value)}catch(_){}};
 $("#phone").oninput=e=>{try{localStorage.setItem("ots-phone",e.target.value)}catch(_){}};
@@ -300,6 +314,8 @@ function render(){
  $("#bar").classList.toggle("show",n>0||placed);
  $("#bplace").disabled=!n;
  $("#bcancel").disabled=!n&&!placed;
+ $("#payment").hidden=!placed||!db;
+ memberSelect.disabled=Boolean(orderedMember);
  const selected=ITEMS.filter(it=>cart[it.id]);
  const orderItems=selected.length?selected.map(it=>`<div><span>${cart[it.id]} × ${it.n}</span><b>₹${cart[it.id]*it.p}</b>${!groupByItem.has(it.id)&&MENU.some(item=>item.id===it.id)?"":`<button type="button" data-a="x" data-i="${it.id}" aria-label="Remove ${it.n}">×</button>`}</div>`).join(""):"<p>Your cart is empty.</p>";
  if($("#menu-cart-items").dataset.items!==orderItems){
@@ -316,7 +332,7 @@ function render(){
  $("#tg").innerHTML=rows.length?rows.map(i=>`<div>${i.n}<b>${s[i.id]}</b></div>`).join(""):'<div style="grid-column:1/-1;color:var(--mut)">No orders yet.</div>';
  const h=histHtml();if(h!==lastH){lastH=h;$("#hl").innerHTML=h}
  let gt=0;const SM=sums(orders);const sumHtml='<div class="tg">'+ITEMS.filter(i=>SM.s[i.id]).map(i=>"<div>"+i.n+"<b>"+SM.s[i.id]+"</b></div>").join("")+"</div>";const A=Object.values(orders).map(o=>{let a=0;const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{a+=o.items[i.id]*i.p;return o.items[i.id]+" "+i.n}).join(", ");gt+=a;const tm=o.at?new Date(o.at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";return "<tr><td>"+esc(o.name||"?")+"</td><td>"+tm+"</td><td>"+esc(t)+"</td><td>₹"+a+"</td></tr>"}).join("");
- $("#al").innerHTML=A?'<table class="at"><tr><th>Username</th><th>Time</th><th>Order</th><th>Amount</th></tr>'+A+'<tr><td colspan="3"><b>Grand total</b></td><td><b>₹'+gt+'</b></td></tr></table>'+'<div class="msg" style="margin:10px 0 4px">'+Object.keys(orders).length+' people ordered · Tea '+SM.c.Tea+' · Coffee '+SM.c.Coffee+' · Snacks '+SM.c.Snacks+'</div>'+sumHtml:'<div class="msg">No orders yet today.</div>'
+ $("#al").innerHTML=A?'<table class="at"><tr><th>Team member</th><th>Time</th><th>Order</th><th>Amount</th></tr>'+A+'<tr><td colspan="3"><b>Grand total</b></td><td><b>₹'+gt+'</b></td></tr></table>'+'<div class="msg" style="margin:10px 0 4px">'+Object.keys(orders).length+' people ordered · Tea '+SM.c.Tea+' · Coffee '+SM.c.Coffee+' · Snacks '+SM.c.Snacks+'</div>'+sumHtml:'<div class="msg">No orders yet today.</div>'
  if(db&&WS)$("#live").textContent=(WS.closed===today?"🔒 Orders closed for today · ":"")+"Workspace code: "+SLUG;
  const ppl=Object.values(orders).filter(o=>o.name);
  $("#people").textContent=ppl.length?"Ordered by: "+ppl.map(o=>o.name).join(", "):"";
@@ -324,7 +340,7 @@ function render(){
 $("#bcancel").onclick=async()=>{
  try{
   if(db) await result(db.from("ots_orders").delete().match({slug:SLUG,day:today,uid:myId}));
-  cart={};placed=false;render();
+  cart={};placed=false;orderedMember="";render();
   if(db) await refreshWorkspace();
  }catch(error){alert("Could not cancel the order. Please try again.")}
 };
@@ -367,10 +383,10 @@ function receipt(){const nm=$("#name").value.trim(),ph=$("#phone").value.trim();
  return{amt,L,text:"*Office Tea & Snacks – Order*\nName: "+nm+"\nPhone: "+ph+"\n\n"+L.join("\n")+"\n\n*Total: ₹"+amt+"*\nPay to UPI: jinshadk007@okicici"}}
 $("#bplace").onclick=async()=>{
  const nm=$("#name").value.trim(),ph=fixNum($("#phone").value);
- if(!nm){$("#who").scrollIntoView();alert("Please enter your username first.");return}
+ if(!nm){$("#who").scrollIntoView();memberSelect.focus();alert("Please select your name first.");return}
  if(WS&&WS.closed===today&&(WS.admin!==myId||asUser)){alert("Orders are closed for today.");return}
- if(allOrders.some(o=>o.uid!==myId&&(o.name||"").toLowerCase()===nm.toLowerCase())){alert("This username is already taken by someone else. Please choose a different one.");return}
- const r=receipt(), button=$("#bplace");
+ if(allOrders.some(o=>o.day===today&&o.uid!==myId&&(o.name||"").toLowerCase()===nm.toLowerCase())){alert("This team member already has an order today.");return}
+ const button=$("#bplace");
  if(!Object.keys(cart).length){alert("Select at least one item.");return}
  button.disabled=true;
  try{
@@ -380,11 +396,18 @@ $("#bplace").onclick=async()=>{
  }catch(error){
   alert("Could not save the order. Check whether orders are open and try again.");return;
  }finally{button.disabled=false}
- placed=true;render();
- if(db) refreshWorkspace();$("#rc").innerHTML=r.L.join("<br>")+"<br><b>Total: ₹"+r.amt+"</b>";$("#mt").textContent=r.amt;
+ placed=true;orderedMember=nm;restoreMember(nm);render();
+ if(db) refreshWorkspace();
+ showPayment();
+};
+function showPayment(){
+ const r=receipt();
+ $("#rc").innerHTML=r.L.join("<br>")+"<br><b>Total: ₹"+r.amt+"</b>";$("#mt").textContent=r.amt;
  $("#upi").onclick=()=>openLink("upi://pay?pa=jinshadk007@okicici&pn=Jinshad%20K&cu=INR&am="+r.amt+"&tn=Office%20snacks");
 
- $("#md").classList.add("on")};
+ $("#md").classList.add("on");
+}
+$("#payment").onclick=showPayment;
 $("#mx").onclick=()=>$("#md").classList.remove("on");
 function totalsText(list,day){const {s,c}=sums(list);
  const line=cat=>ITEMS.filter(i=>i.c==cat&&s[i.id]).map(i=>"  - "+i.n+": "+s[i.id]).join("\n");
@@ -431,7 +454,7 @@ $("#reset").onclick=async()=>{
  if(!db||!isOwn||!confirm("Delete ALL of today’s orders?"))return;
  try{
   await result(db.from("ots_orders").delete().match({slug:SLUG,day:today}));
-  cart={};placed=false;render();await refreshWorkspace();
+  cart={};placed=false;orderedMember="";render();await refreshWorkspace();
  }catch(error){alert("Could not reset the orders. Please try again.")}
 };
 function showWorkspace(workspace){
@@ -459,7 +482,8 @@ async function refreshWorkspace(restoreOrder=false){
   if(restoreOrder&&orders[myId]){
    const own=orders[myId];
    cart={...own.items};placed=true;
-   if(!$("#name").value)$("#name").value=own.name;
+   orderedMember=own.name;
+   restoreMember(own.name);
    if(!$("#phone").value)$("#phone").value=own.phone;
   }
   showWorkspace(workspace);
@@ -599,7 +623,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
  if(["localhost","127.0.0.1"].includes(location.hostname)&&new URLSearchParams(location.search).has("demo")){
   $("#logo").textContent="☕ Acme Foods";
   $("#live").textContent="Demo workspace · Sample phone +91 00000 00000";
-  $("#name").value="Demo User";
+  restoreMember("Demo User");
   $("#name").oninput=null;
   $("#md .qr").style.display="none";
   $("#upi").style.display="none";
