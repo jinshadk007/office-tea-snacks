@@ -10,7 +10,7 @@ Serve the repository over HTTPS or on localhost. For local development, run `pyt
 
 ## Supabase setup
 
-1. For a new Supabase project, run [supabase/setup.sql](supabase/setup.sql) once in the SQL Editor. The schema has already been applied to `chai_kada`.
+1. For a new Supabase project, run [supabase/setup.sql](supabase/setup.sql) once in the SQL Editor. The schema has already been applied to `chaya-kada` (project ref `ufumdavqbqkrllgbjcev`).
 2. In **Authentication → Sign In / Providers**, make sure **Allow anonymous sign-ins** is enabled. The app uses these sessions to identify coworkers without requiring a separate login.
 3. To point the app at a different project, replace the URL and publishable key in the `createClient` call in `order.html`.
 

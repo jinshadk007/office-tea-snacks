@@ -582,7 +582,7 @@ let connection;
 function connect(){
  if(!connection)connection=(async()=>{
   if(!window.supabase)throw new Error("Supabase could not load. Reload the page and try again.");
-  const client=window.supabase.createClient("https://twpicuqymaqanptwwevy.supabase.co","sb_publishable_ABAY8y0kGy4qdyWEo0Ol5w_ByfsCgnU");
+  const client=window.supabase.createClient("https://ufumdavqbqkrllgbjcev.supabase.co","sb_publishable_H__xNf98sI_IDbYEbU9UvA_Nk3ZQm2A");
   let {session}=await result(client.auth.getSession());
   if(!session)({session}=await result(client.auth.signInAnonymously()));
   if(!session)throw new Error("Could not start a Supabase session.");
