@@ -71,7 +71,13 @@ a[data-go]{cursor:pointer}
 .big{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .big div{background:var(--y);color:#000;border-radius:12px;padding:12px;font-weight:700;font-size:13px}
 .big b{display:block;font-size:28px}
-#name{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit;color:inherit;background:inherit}
+#member-picker{border:1px solid var(--line);border-radius:10px}
+#member-picker summary{padding:8px 11px;cursor:pointer}
+#member-picker summary img{vertical-align:middle;margin-right:8px}
+#member-options{display:grid;gap:4px;padding:0 8px 8px;max-height:240px;overflow:auto}
+#member-options button{display:flex;align-items:center;gap:9px;padding:5px 8px;border-radius:6px;border:1px solid transparent;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}
+#member-options button:is(:hover,:focus-visible,[aria-pressed="true"]){border-color:var(--y)}
+.member-photo{width:36px;height:36px;object-fit:cover;border-radius:50%}
 input{background:#101010;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px;font-size:15px;width:100%}
 /* cart bar */
 #bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#111;border-top:2px solid var(--y);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));transform:translateY(110%);transition:transform .35s}
@@ -117,8 +123,15 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
   <aside class="menu-order" aria-labelledby="order-title">
     <h2 id="order-title">Your order</h2>
     <div id="who">
-      <label for="name">Order for</label>
-      <select id="name" required><option value="">Select your name</option></select>
+      <span id="member-label">Order for</span>
+      <details id="member-picker">
+        <summary aria-labelledby="member-label member-caption">
+          <img id="member-photo" class="member-photo" alt="" hidden>
+          <span id="member-caption">Select your name</span>
+        </summary>
+        <div id="member-options"><span role="status">Loading team members…</span></div>
+      </details>
+      <input type="hidden" id="name">
       <input id="phone" type="hidden">
     </div>
     <div id="menu-cart-items" aria-live="polite"></div>
@@ -162,7 +175,7 @@ const ITEMS=[
  ...[["Normal Tea",10],["Light Tea",10],["Strong Tea",12],["Tea Without Sugar",10],["Light Tea Without Sugar",10],["Strong Tea Without Sugar",12]].map(([n,p],i)=>({id:"tea"+i,n,p,c:"Tea",e:"🍵"})),
  ...[["Normal Coffee",15],["Light Coffee",15],["Strong Coffee",18],["Coffee Without Sugar",15],["Light Coffee Without Sugar",15],["Strong Coffee Without Sugar",18]].map(([n,p],i)=>({id:"cof"+i,n,p,c:"Coffee",e:"☕"})),
  ...[["Samosa",12,"🥟"],["Pazhampori",12,"🍌"],["Ullivada",10,"🧅"],["Masala Bonda",10,"🥔"],["Puffs",20,"🥐"],["Parippuvada",10,"🍘"],["Sugiyan",10,"🟤"],["Pathiri",15,"🥘"],["Kayabaji",12,"🍠"]].map(([n,p,e],i)=>({id:"sn"+i,n,p,c:"Snacks",e})),
- {id:"lime",n:"Lime",p:null,c:"Lime",e:"🍋"}
+ {id:"lime",n:"Lime",p:20,c:"Lime",e:"🍋"}
 ];
 const fixedMenu=[["tea2","ST"],["tea0","NT"],["tea1","LT"],["cof2","SC"],["cof0","NC"],["lime",""],["sn2",""],["sn5",""],["sn1",""],["sn6",""],["sn7",""],["sn4",""]];
 const MENU=fixedMenu.map(([id,code])=>({...ITEMS.find(item=>item.id===id),code}));
@@ -175,20 +188,63 @@ const today=dayStr(new Date());
 const recentDays=[0,1,2].map(offset=>{const date=new Date();date.setDate(date.getDate()-offset);return dayStr(date)});const OFFICE="916238160816",BE=["🍵","🥟","☕"];
 const safe=s=>{try{return localStorage.getItem(s)||""}catch(e){return ""}};
 const memberSelect=$("#name");
-let orderedMember="";
-for(let member=1;member<=10;member++){
- const label="Team Member "+String(member).padStart(2,"0");
- memberSelect.add(new Option(label,label));
-}
-memberSelect.value=safe("ots-name");
+const memberPicker=$("#member-picker");
+const memberSummary=memberPicker.querySelector("summary");
+const memberOptions=$("#member-options");
+const memberPhoto=$("#member-photo");
+const creditsDirectory="demos/pattu-book/albums/";
+const memberPhotos=new Map();
 function restoreMember(name){
- if(!Array.from(memberSelect.options).some(option=>option.value===name)){
-  memberSelect.add(new Option(name,name));
- }
  memberSelect.value=name;
+ $("#member-caption").textContent=name||"Select your name";
+ const photo=memberPhotos.get(name);
+ memberPhoto.hidden=!photo;
+ if(photo)memberPhoto.src=photo;
+ for(const button of memberOptions.querySelectorAll("button")){
+  button.setAttribute("aria-pressed",String(button.dataset.member===name));
+ }
 }
+memberOptions.addEventListener("click",event=>{
+ const option=event.target.closest("button[data-member]");
+ if(!option)return;
+ if(option.dataset.member!==memberSelect.value){
+  restoreMember(option.dataset.member);
+  placed=false;
+  render();
+ }
+ try{localStorage.setItem("ots-name",memberSelect.value)}catch(_){}
+ memberPicker.open=false;
+ memberSummary.focus();
+});
+fetch(creditsDirectory+"collection.json")
+ .then(response=>{
+  if(!response.ok)throw new Error("Could not load team members");
+  return response.json();
+ })
+ .then(({albums})=>{
+  const options=albums.map(member=>{
+   const photo=creditsDirectory+member.id+"/"+member.coverSmall;
+   memberPhotos.set(member.title,photo);
+   const button=document.createElement("button");
+   button.type="button";
+   button.dataset.member=member.title;
+   const image=document.createElement("img");
+   image.className="member-photo";
+   image.alt="";
+   image.src=photo;
+   const name=document.createElement("span");
+   name.textContent=member.title;
+   button.append(image,name);
+   return button;
+  });
+  memberOptions.replaceChildren(...options);
+  const saved=safe("ots-name");
+  restoreMember(memberSelect.value||(memberPhotos.has(saved)?saved:""));
+ })
+ .catch(()=>{
+  memberOptions.textContent="Could not load team members. Reload to try again.";
+ });
 $("#phone").value=safe("ots-phone");
-$("#name").oninput=e=>{try{localStorage.setItem("ots-name",e.target.value)}catch(_){}};
 $("#phone").oninput=e=>{try{localStorage.setItem("ots-phone",e.target.value)}catch(_){}};
 const fixNum=x=>{const d=x.replace(/\D/g,"");return d.length==10?"91"+d:d};
 function openLink(u,blank){const a=document.createElement("a");a.href=u;if(blank){a.target="_blank";a.rel="noopener"}document.body.appendChild(a);a.click();a.remove()}
@@ -315,7 +371,6 @@ function render(){
  $("#bplace").disabled=!n;
  $("#bcancel").disabled=!n&&!placed;
  $("#payment").hidden=!placed||!db;
- memberSelect.disabled=Boolean(orderedMember);
  const selected=ITEMS.filter(it=>cart[it.id]);
  const orderItems=selected.length?selected.map(it=>`<div><span>${cart[it.id]} × ${it.n}</span><b>₹${cart[it.id]*it.p}</b>${!groupByItem.has(it.id)&&MENU.some(item=>item.id===it.id)?"":`<button type="button" data-a="x" data-i="${it.id}" aria-label="Remove ${it.n}">×</button>`}</div>`).join(""):"<p>Your cart is empty.</p>";
  if($("#menu-cart-items").dataset.items!==orderItems){
@@ -327,7 +382,7 @@ function render(){
  const {s,c}=sums(src);
  MENU.forEach(i=>$("#t-"+i.id).textContent=s[i.id]?"Total ordered: "+s[i.id]:"");
  const all=c.Tea+c.Coffee+c.Snacks+c.Lime;
- $("#big").innerHTML=`<div><b>${c.Tea}</b>Tea total</div><div><b>${c.Coffee}</b>Coffee total</div><div><b>${c.Snacks}</b>Snacks total</div><div><b>${all}</b>All items</div>`;
+ $("#big").innerHTML=`<div><b>${c.Tea}</b>Tea total</div><div><b>${c.Coffee}</b>Coffee total</div><div><b>${c.Snacks}</b>Snacks total</div><div><b>${c.Lime}</b>Lime total</div><div><b>${all}</b>All items</div>`;
  const rows=ITEMS.filter(i=>s[i.id]);
  $("#tg").innerHTML=rows.length?rows.map(i=>`<div>${i.n}<b>${s[i.id]}</b></div>`).join(""):'<div style="grid-column:1/-1;color:var(--mut)">No orders yet.</div>';
  const h=histHtml();if(h!==lastH){lastH=h;$("#hl").innerHTML=h}
@@ -340,7 +395,7 @@ function render(){
 $("#bcancel").onclick=async()=>{
  try{
   if(db) await result(db.from("ots_orders").delete().match({slug:SLUG,day:today,uid:myId}));
-  cart={};placed=false;orderedMember="";render();
+  cart={};placed=false;render();
   if(db) await refreshWorkspace();
  }catch(error){alert("Could not cancel the order. Please try again.")}
 };
@@ -383,7 +438,7 @@ function receipt(){const nm=$("#name").value.trim(),ph=$("#phone").value.trim();
  return{amt,L,text:"*Office Tea & Snacks – Order*\nName: "+nm+"\nPhone: "+ph+"\n\n"+L.join("\n")+"\n\n*Total: ₹"+amt+"*\nPay to UPI: jinshadk007@okicici"}}
 $("#bplace").onclick=async()=>{
  const nm=$("#name").value.trim(),ph=fixNum($("#phone").value);
- if(!nm){$("#who").scrollIntoView();memberSelect.focus();alert("Please select your name first.");return}
+ if(!nm){$("#who").scrollIntoView();memberPicker.open=true;memberSummary.focus();alert("Please select your name first.");return}
  if(WS&&WS.closed===today&&(WS.admin!==myId||asUser)){alert("Orders are closed for today.");return}
  if(allOrders.some(o=>o.day===today&&o.uid!==myId&&(o.name||"").toLowerCase()===nm.toLowerCase())){alert("This team member already has an order today.");return}
  const button=$("#bplace");
@@ -396,7 +451,7 @@ $("#bplace").onclick=async()=>{
  }catch(error){
   alert("Could not save the order. Check whether orders are open and try again.");return;
  }finally{button.disabled=false}
- placed=true;orderedMember=nm;restoreMember(nm);render();
+ placed=true;restoreMember(nm);render();
  if(db) refreshWorkspace();
  showPayment();
 };
@@ -412,13 +467,13 @@ $("#mx").onclick=()=>$("#md").classList.remove("on");
 function totalsText(list,day){const {s,c}=sums(list);
  const line=cat=>ITEMS.filter(i=>i.c==cat&&s[i.id]).map(i=>"  - "+i.n+": "+s[i.id]).join("\n");
  let amt=0;const ppl=list.map(o=>{let a=0;const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{a+=o.items[i.id]*i.p;return o.items[i.id]+" "+i.n}).join(", ");amt+=a;return "• "+(o.name||"?")+(o.phone?" ("+o.phone+")":"")+": "+t+" = ₹"+a});
- return "*"+(WS?WS.name:"Office")+" order totals – "+day+"*\n\n*Tea total: "+c.Tea+"*\n"+line("Tea")+"\n\n*Coffee total: "+c.Coffee+"*\n"+line("Coffee")+"\n\n*Snacks total: "+c.Snacks+"*\n"+line("Snacks")+"\n\n*Who ordered*\n"+ppl.join("\n")+"\n\n*Grand total: ₹"+amt+"*"}
+ return "*"+(WS?WS.name:"Office")+" order totals – "+day+"*\n\n*Tea total: "+c.Tea+"*\n"+line("Tea")+"\n\n*Coffee total: "+c.Coffee+"*\n"+line("Coffee")+"\n\n*Snacks total: "+c.Snacks+"*\n"+line("Snacks")+"\n\n*Lime total: "+c.Lime+"*\n"+line("Lime")+"\n\n*Who ordered*\n"+ppl.join("\n")+"\n\n*Grand total: ₹"+amt+"*"}
 const sendTo=()=>fixNum(WS&&WS.phone||OFFICE);
 $("#sendtot").onclick=()=>wa(sendTo(),totalsText(allOrders.filter(o=>o.day==today),today));
 function histHtml(){return [0,1,2].map(n=>{const day=recentDays[n],L=allOrders.filter(o=>o.day==day),{c}=sums(L);let amt=0;
  L.forEach(o=>Object.entries(o.items||{}).forEach(([id,q])=>{const it=ITEMS.find(x=>x.id==id);if(it)amt+=q*it.p}));
  const lines=L.map(o=>"• "+esc(o.name||"?")+": "+ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>o.items[i.id]+" "+i.n).join(", ")).join("<br>")||"No orders";
- return `<details class="dd"><summary><b>${n==0?"Today":n==1?"Yesterday":day}</b> · ${L.length} orders · ₹${amt} · Tea ${c.Tea} · Coffee ${c.Coffee} · Snacks ${c.Snacks}</summary><div class="rc">${lines}</div><button class="cancel adm" data-h="${day}">Send this list to WhatsApp</button></details>`}).join("")}
+ return `<details class="dd"><summary><b>${n==0?"Today":n==1?"Yesterday":day}</b> · ${L.length} orders · ₹${amt} · Tea ${c.Tea} · Coffee ${c.Coffee} · Snacks ${c.Snacks} · Lime ${c.Lime}</summary><div class="rc">${lines}</div><button class="cancel adm" data-h="${day}">Send this list to WhatsApp</button></details>`}).join("")}
 document.addEventListener("click",e=>{
  const g=e.target.closest("[data-go]");if(g){e.preventDefault();const section=g.dataset.go;
  if(section==="tea"||section==="snacks"){
@@ -454,7 +509,7 @@ $("#reset").onclick=async()=>{
  if(!db||!isOwn||!confirm("Delete ALL of today’s orders?"))return;
  try{
   await result(db.from("ots_orders").delete().match({slug:SLUG,day:today}));
-  cart={};placed=false;orderedMember="";render();await refreshWorkspace();
+  cart={};placed=false;render();await refreshWorkspace();
  }catch(error){alert("Could not reset the orders. Please try again.")}
 };
 function showWorkspace(workspace){
@@ -482,7 +537,6 @@ async function refreshWorkspace(restoreOrder=false){
   if(restoreOrder&&orders[myId]){
    const own=orders[myId];
    cart={...own.items};placed=true;
-   orderedMember=own.name;
    restoreMember(own.name);
    if(!$("#phone").value)$("#phone").value=own.phone;
   }
@@ -624,7 +678,6 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("#logo").textContent="☕ Acme Foods";
   $("#live").textContent="Demo workspace · Sample phone +91 00000 00000";
   restoreMember("Demo User");
-  $("#name").oninput=null;
   $("#md .qr").style.display="none";
   $("#upi").style.display="none";
   $("#gate").classList.remove("on");
