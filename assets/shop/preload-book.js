@@ -10,6 +10,10 @@ if (bookLink && !navigator.connection?.saveData) {
   frame.setAttribute('aria-hidden', 'true');
 
   function showBook(open) {
+    if (open && !frame.isConnected) {
+      frame.src = bookUrl.href;
+      document.body.append(frame);
+    }
     frame.classList.toggle('is-open', open);
     frame.inert = !open;
     frame.setAttribute('aria-hidden', String(!open));
@@ -28,8 +32,16 @@ if (bookLink && !navigator.connection?.saveData) {
     });
   });
 
-  frame.src = bookUrl.href;
-  document.body.append(frame);
+  // Warm the first portrait without starting the 3D renderer on the landing page.
+  function prefetchCover() {
+    const preload = document.createElement('link');
+    preload.rel = 'prefetch';
+    const cover = matchMedia('(max-width: 650px)').matches ? 'cover-small.webp' : 'cover.webp';
+    preload.href = new URL(`albums/team-member-01/${cover}`, bookUrl);
+    document.head.append(preload);
+  }
+  if ('requestIdleCallback' in window) requestIdleCallback(prefetchCover);
+  else window.addEventListener('load', prefetchCover, { once: true });
   window.addEventListener('popstate', () => showBook(Boolean(history.state?.pattuBook)));
 
   for (const link of document.querySelectorAll('a[href="./demos/pattu-book/#/"]')) {

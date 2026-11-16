@@ -44,6 +44,7 @@ nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 }
 
 .pattu-preview {
+  display: none;
   position: fixed;
   inset: 0;
   z-index: -10;
@@ -54,6 +55,7 @@ nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
   pointer-events: none;
 }
 .pattu-preview.is-open {
+  display: block;
   z-index: 100;
   opacity: 1;
   pointer-events: auto;

@@ -1,4 +1,4 @@
-import { mountHeroSequence } from './hero-sequence.js?v=balanced-pour';
+import { mountHeroSequence } from './hero-sequence.js?v=scroll-performance';
 
 const motion = matchMedia('(prefers-reduced-motion: no-preference)');
 let unmountSequence;
