@@ -3,7 +3,7 @@ import { createFramePlayer } from './frame-player.js';
 
 // The reference's hand-inked yellow kiosk palette, applied to the existing 3D journey.
 export function illustrateShop(world,scene,renderer,onReady=()=>{}){
-  const palette={plaster:'#e2ba51',green:'#778d6b',wood:'#be943f',darkWood:'#4a4030',floor:'#c7bc9f',stone:'#d3cbb8',roof:'#71846a',iron:'#353731',brass:'#9c8a5a',steel:'#b7b9ae'};
+  const palette={plaster:'#e2ba51',green:'#778d6b',wood:'#be943f',darkWood:'#4a4030',floor:'#dfceb0',stone:'#dfd2bc',roof:'#71846a',iron:'#353731',brass:'#9c8a5a',steel:'#b7b9ae'};
   for(const [name,color] of Object.entries(palette)){
     const material=world.materials[name];material.map=null;material.bumpMap=null;
     material.color.set(color);material.roughness=name==='steel'?.5:.95;material.flatShading=true;material.needsUpdate=true;
@@ -15,7 +15,8 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
     if(light.isHemisphereLight){light.color.set('#fff9eb');light.groundColor.set('#82745a');light.intensity=1.6;}
     if(light.isDirectionalLight){light.color.set('#fff6e2');light.intensity=2.3;light.shadow.mapSize.set(2048,2048);light.shadow.normalBias=.025;}
   }
-  const ground=world.building.children[0];ground.material=new THREE.MeshStandardMaterial({color:'#f5f2e9',roughness:1});
+  const ground=world.building.children[0];ground.scale.set(180,.15,180);const soil=mudTexture();ground.material=new THREE.MeshStandardMaterial({color:'#ddc9ae',map:soil,roughness:1});
+  addEventListener('pagehide',()=>{soil.dispose();ground.material.dispose();},{once:true});
   // The facade's old clay roof gives way to a faded green fabric canopy.
   world.building.children.filter(o=>o.isInstancedMesh&&o.material===world.materials.roof).forEach(o=>o.visible=false);
   world.building.children.filter(o=>o.isMesh&&o.geometry.type==='BoxGeometry'&&o.scale.x>10&&Math.abs(o.position.z-1)<.05).forEach(o=>o.visible=false);
@@ -52,11 +53,24 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
   for(const mesh of meshes)mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,35),ink));
 
   const benchPlayers=[];
+  let servingGuest;
+  world.building.children.filter(o=>o.isGroup&&Math.abs(o.position.z+5.55)<.02&&[-2.6,-1.65].some(x=>Math.abs(o.position.x-x)<.02)).forEach(o=>o.visible=false);
+  new THREE.TextureLoader().load(new URL('./guests/pink-salwar-side-seated.png',import.meta.url).href,texture=>{
+    texture.colorSpace=THREE.SRGBColorSpace;
+    texture.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
+    const height=1.8;
+    const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.035,depthWrite:true,toneMapped:false});
+    const guest=new THREE.Mesh(new THREE.PlaneGeometry(height*texture.image.width/texture.image.height,height),material);
+    guest.name='Woman in a pink salwar seated at an interior table enjoying chai';
+    guest.position.set(-3.0,height/2-.05,-5.3);group.add(guest);servingGuest=guest;
+    renderer.domElement.dataset.pinkSalwarGuest='ready';onReady();
+    addEventListener('pagehide',()=>{texture.dispose();material.dispose();guest.geometry.dispose();},{once:true});
+  },undefined,error=>console.warn('The tea shop guest could not be loaded.',error));
   addAnimatedBench({folder:'./friends-bench/motion/',name:'Friends sipping tea and eating snacks',x:-3.05,z:2.65,height:2.05,count:95,frameKey:'friendsFrame'});
   addAnimatedBench({folder:'./couple-bench/motion/',name:'Couple sipping tea on the front bench',x:3.15,z:4.6,height:2.15,count:95,frameKey:'coupleFrame'});
-  addAnimatedBench({folder:'./washing-side/trio-motion/',name:'Three friends washing cooking pots beside the shop',x:6.6,z:.8,height:2.05,count:96,frameKey:'washingFrame'});
+  addAnimatedBench({folder:'./washing-side/trio-motion/',name:'Three friends washing cooking pots beside the shop',x:7.0,z:.8,height:2.05,count:96,frameKey:'washingFrame'});
   const washPlatform=new THREE.Mesh(new THREE.BoxGeometry(3.9,.07,2.1),new THREE.MeshStandardMaterial({color:'#c6bea6',roughness:1}));
-  washPlatform.name='Side washing area';washPlatform.position.set(6.6,-.09,.7);washPlatform.receiveShadow=true;group.add(washPlatform);
+  washPlatform.name='Side washing area';washPlatform.position.set(7.0,-.09,.7);washPlatform.receiveShadow=true;group.add(washPlatform);
   function addAnimatedBench({folder,name,x,z,height,count,frameKey}){
     const source=document.createElement('canvas');source.width=960;source.height=540;source.hidden=true;document.querySelector('.actor-cache').append(source);
     const texture=new THREE.CanvasTexture(source);texture.colorSpace=THREE.SRGBColorSpace;
@@ -70,7 +84,8 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
     poster.decode().then(()=>{source.getContext('2d').drawImage(poster,0,0,960,540);texture.needsUpdate=true;onReady();}).catch(()=>{});
     addEventListener('pagehide',()=>{player.destroy();texture.dispose();material.dispose();bench.geometry.dispose();},{once:true});
   }
-  return (seconds,enabled)=>{
+  return (seconds,enabled,cleaningActive)=>{
+    if(servingGuest){servingGuest.rotation.z=cleaningActive?Math.sin(seconds*1.25)*.006:0;}
     for(const player of benchPlayers){player.setActive(enabled);player.setProgress(enabled?(seconds%8)/8:0);}
   };
 }
@@ -78,21 +93,37 @@ function lightSky(){
   const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=1024;
   const ctx=canvas.getContext('2d');
   const wash=ctx.createLinearGradient(0,0,0,1024);
-  wash.addColorStop(0,'#e7f1f5');wash.addColorStop(.42,'#f0f5f4');wash.addColorStop(.8,'#f7f5ef');
+  wash.addColorStop(0,'#c8e4f4');wash.addColorStop(.28,'#e0f0f8');wash.addColorStop(.5,'#f7f5ef');wash.addColorStop(1,'#f7f5ef');
   ctx.fillStyle=wash;ctx.fillRect(0,0,1024,1024);
-  // Soft cloud clusters frame the title without crowding it.
-  for(const [x,y,rx,ry] of [[130,200,175,42],[850,260,200,45],[320,350,120,28]]){
-    for(const [dx,dy,size] of [[-.48,.13,.7],[0,-.13,1],[.5,.1,.78]]){
-      ctx.save();ctx.translate(x+dx*rx,y+dy*ry);ctx.scale(rx*size,ry*size);
-      const cloud=ctx.createRadialGradient(0,0,.12,0,0,1);
-      cloud.addColorStop(0,'rgba(255,255,255,.74)');
-      cloud.addColorStop(.45,'rgba(255,255,255,.52)');
-      cloud.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.fillStyle=cloud;ctx.fillRect(-1,-1,2,2);ctx.restore();
+  // Puffy cloud silhouettes sit at the edges, leaving the central title clear.
+  for(const [x,y,scale] of [[90,220,1],[900,135,1.4],[770,365,.65]]){
+    ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+    const puffs=[[-110,12,22],[-82,0,32],[-42,-12,39],[0,-32,49],[43,-10,37],[78,8,27],[110,17,17]];
+    ctx.shadowColor='rgba(120,166,191,.13)';ctx.shadowBlur=7;ctx.shadowOffsetY=4;
+    for(const [px,py,r] of puffs){
+      const cloud=ctx.createLinearGradient(0,py-r,0,py+r);
+      cloud.addColorStop(0,'rgba(255,255,255,.95)');cloud.addColorStop(.55,'rgba(255,255,255,.92)');cloud.addColorStop(1,'rgba(230,242,249,.8)');
+      ctx.fillStyle=cloud;ctx.beginPath();ctx.ellipse(px,py,r,r*.75,0,0,Math.PI*2);ctx.fill();
     }
+    ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    const base=ctx.createRadialGradient(0,20,8,0,20,140);base.addColorStop(0,'rgba(255,255,255,.9)');base.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.scale(1,.2);ctx.fillStyle=base;ctx.fillRect(-145,-40,290,230);ctx.restore();
   }
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   addEventListener('pagehide',()=>texture.dispose(),{once:true});return texture;
+}
+function mudTexture(){
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
+  const ctx=canvas.getContext('2d');ctx.fillStyle='#e5d7c2';ctx.fillRect(0,0,256,256);
+  let seed=31;const random=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+  for(let i=0;i<70;i++){
+    const x=random()*256,y=random()*256,r=8+random()*28;
+    const patch=ctx.createRadialGradient(x,y,0,x,y,r);patch.addColorStop(0,'rgba(103,69,37,.018)');patch.addColorStop(1,'rgba(103,69,37,0)');
+    ctx.fillStyle=patch;ctx.fillRect(x-r,y-r,r*2,r*2);
+  }
+  for(let i=0;i<3500;i++){ctx.fillStyle=i%3?'rgba(106,75,44,.035)':'rgba(255,241,216,.16)';ctx.fillRect(random()*256,random()*256,.5+random(),.5+random());}
+  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+  texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(48,48);texture.anisotropy=4;return texture;
 }
 function grain(){
   const c=document.createElement('canvas');c.width=c.height=256;const ctx=c.getContext('2d');ctx.fillStyle='#fff6d5';ctx.fillRect(0,0,256,256);

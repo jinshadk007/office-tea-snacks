@@ -1,56 +1,55 @@
-const bookLink = document.querySelector('nav a[href="./demos/pattu-book/#/"]');
-
-if (bookLink && !navigator.connection?.saveData) {
-  const bookUrl = new URL(bookLink.href);
-  const landing = document.querySelectorAll('body > :is(header, main, footer, .skip)');
+const bookLinks = [...document.querySelectorAll('a[href]')].filter(link => new URL(link.href).pathname.endsWith('/demos/pattu-book/'));
+if (bookLinks.length) {
+  const bookLink = bookLinks[0];
   const frame = document.createElement('iframe');
+  const bookUrl = new URL(bookLink.href);
+  bookUrl.searchParams.set('warm', '1');
   frame.className = 'pattu-preview';
   frame.title = 'Pattu Book';
   frame.inert = true;
+  frame.tabIndex = -1;
   frame.setAttribute('aria-hidden', 'true');
-
+  const landing = [...document.querySelectorAll('body > :is(header, main, footer, .skip)')];
+  let opened = false;
+  let returnUrl = location.href;
+  function notifyBook() {
+    frame.contentWindow?.postMessage({type:'pattu-visibility', active:opened}, location.origin);
+  }
+  function mount() {
+    if (frame.isConnected) return;
+    frame.src = bookUrl.href;
+    document.body.append(frame);
+  }
   function showBook(open) {
-    if (open && !frame.isConnected) {
-      frame.src = bookUrl.href;
-      document.body.append(frame);
-    }
-    frame.classList.toggle('is-open', open);
+    mount();opened = open;
+    frame.classList.toggle('is-open',open);
     frame.inert = !open;
-    frame.setAttribute('aria-hidden', String(!open));
-    document.body.classList.toggle('pattu-open', open);
+    frame.tabIndex = open ? 0 : -1;
+    frame.setAttribute('aria-hidden',String(!open));
+    document.body.classList.toggle('pattu-open',open);
     for (const element of landing) element.inert = open;
-    if (open) frame.focus();
-    else bookLink.focus({ preventScroll: true });
+    notifyBook();
+    window.dispatchEvent(new Event('pattu-visibility'));
+    if (open) frame.focus(); else bookLink.focus({preventScroll:true});
   }
-
-  frame.addEventListener('load', () => {
-    const back = frame.contentDocument?.querySelector('.landing-link');
-    back?.addEventListener('click', event => {
-      if (!history.state?.pattuBook) return;
-      event.preventDefault();
-      history.back();
-    });
+  frame.addEventListener('load',()=>{
+    notifyBook();
+    frame.contentDocument?.querySelector('.landing-link')?.addEventListener('click',event=>{
+      event.preventDefault();event.stopImmediatePropagation();
+      history.replaceState(null,'',returnUrl);showBook(false);
+    },true);
   });
-
-  // Warm the first portrait without starting the 3D renderer on the landing page.
-  function prefetchCover() {
-    const preload = document.createElement('link');
-    preload.rel = 'prefetch';
-    const cover = matchMedia('(max-width: 650px)').matches ? 'cover-small.webp' : 'cover.webp';
-    preload.href = new URL(`albums/team-member-01/${cover}`, bookUrl);
-    document.head.append(preload);
-  }
-  if ('requestIdleCallback' in window) requestIdleCallback(prefetchCover);
-  else window.addEventListener('load', prefetchCover, { once: true });
-  window.addEventListener('popstate', () => showBook(Boolean(history.state?.pattuBook)));
-
-  for (const link of document.querySelectorAll('a[href="./demos/pattu-book/#/"]')) {
-    link.addEventListener('click', event => {
-      if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      event.preventDefault();
-      history.pushState({ pattuBook: true }, '', '#pattu-book');
-      showBook(true);
-    });
-  }
-  if (history.state?.pattuBook) showBook(true);
+  window.addEventListener('message',event=>{
+    if(event.origin===location.origin&&event.source===frame.contentWindow&&event.data?.type==='pattu-ready')frame.dataset.ready='true';
+  });
+  for (const link of bookLinks) link.addEventListener('click',event=>{
+    if(event.button||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+    event.preventDefault();
+    if(!opened){returnUrl=location.href;const openUrl=new URL(location.href);openUrl.hash='pattu-book';history.pushState({pattuBook:true},'',openUrl.href);}
+    showBook(true);
+  });
+  window.addEventListener('popstate',()=>showBook(Boolean(history.state?.pattuBook)));
+  // Start the actual book during website startup; keep its initialized renderer for reuse.
+  mount();
+  if(history.state?.pattuBook)showBook(true);
 }

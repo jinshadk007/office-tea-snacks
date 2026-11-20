@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import { buildTeaShop } from './tea-world.js';
 import { createFramePlayer } from './frame-player.js';
-import { illustrateShop } from './illustrated-world.js?v=three-cleaners-23';
+import { illustrateShop } from './illustrated-world.js?v=soft-horizon-warm-book-35';
 
 const track=document.querySelector('.walkthrough');
 const stage=document.querySelector('.world-stage');
@@ -154,7 +154,7 @@ function copyAt(p) {
   if(replay)replay.hidden=p<.985;
 }
 function render(time) {
-  raf=0;if(disposed||contextLost||!renderer)return;
+  raf=0;if(disposed||contextLost||!renderer||document.body.classList.contains("pattu-open"))return;
   const distance=Math.max(1,track.offsetHeight-stage.offsetHeight);
   target=clamp(-track.getBoundingClientRect().top/distance);
   const elapsed=Math.min(50,time-lastTime||16);lastTime=time;
@@ -172,7 +172,7 @@ function render(time) {
   const outsideVisible=progress<.42;
   const teaPhase=motion.matches?(time/1000%8)/8:0;
   activate(actors[0],outsideVisible,teaPhase);
-  updateOutside(time/1000,motion.matches&&outsideVisible);
+  updateOutside(time/1000,motion.matches&&outsideVisible,motion.matches&&progress<.6);
   const cook=clamp((progress-.565)/.225);
   activate(actors[1],progress>.36&&progress<.88,cook);
   world.updateCooking(cook);
@@ -222,7 +222,7 @@ try {
     addActor({name:role,...(animated?{folder:`./actors/team-workers/${role==='chai'?'chai-motion-clean':role+'-motion'}/`,count:role==='chai'?85:96}:{still:`./actors/team-workers/${role}.png`}),width:animated?540:640,height:960,size:3.2,position:[-2+i*2,.9,-10.65]});
   }
   // No continuous render loop when scrolling is settled.
-  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',resize);motion.addEventListener('change',schedule);
+  addEventListener('pattu-visibility',schedule);addEventListener('scroll',schedule,{passive:true});addEventListener('resize',resize);motion.addEventListener('change',schedule);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else schedule();});
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();contextLost=true;stage.classList.add('is-context-paused');});
   canvas.addEventListener('webglcontextrestored',()=>{contextLost=false;stage.classList.remove('is-context-paused');actors.forEach(actor=>actor.texture.needsUpdate=true);resize();});

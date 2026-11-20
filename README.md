@@ -14,9 +14,11 @@ Serve the repository over HTTPS or on localhost. For local development, run `pyt
 2. In **Authentication → Sign In / Providers**, make sure **Allow anonymous sign-ins** is enabled. The app uses these sessions to identify coworkers without requiring a separate login.
 3. To point the app at a different project, replace the URL and publishable key in the `createClient` call in `order.html`.
 
-Enter a company name and WhatsApp number to create a workspace. Share the resulting page URL or the displayed invite code with coworkers. Anyone with the code can join and see shared orders, so share it only with the people who should have access.
+The ordering app is for the Orattice office only. Members join automatically with anonymous Supabase sessions and select their photo/name when ordering. No email is required. Admins use **Admin sign in** with the office password; access expires after eight hours and can be signed out explicitly.
 
-The creator's browser session owns the workspace. Keep that session if you need to administer it later. Orders refresh every five seconds. Photos refresh when the page loads. Workspaces and orders previously saved through Claude do not appear automatically in Supabase.
+Apply `supabase/migrations/20261120_single_office.sql` after the base schema. Set the admin password privately in the Supabase SQL Editor using `extensions.crypt` and `extensions.gen_salt('bf', 12)` on `office_tea_private.office_config.password_hash`. Do not put the password in frontend JavaScript or commit it. The database enforces admin permissions, verifies the password hash, and throttles failed attempts. Existing orders are retained. Workspace creation is disabled.
+
+Apply `supabase/migrations/20261120_menu_prices.sql` next. **Admin panel → Menu prices** saves shared prices for each menu item and drink strength. The server checks admin access and captures unit prices when an order is saved. Past orders and payment receipts use those recorded prices. Prices refresh for everyone with the shared order data.
 
 ## Animations
 

@@ -96,14 +96,16 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
 <link rel="stylesheet" href="assets/shop/menu.css">
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.1/dist/umd/supabase.js"></script>
 </head><body class="order-page">
-<div class="md on" id="gate"><div class="mb"><h2>Your company <span>workspace</span></h2>
-<p class="sub" id="gs">Enter your company name or code to join. A new name creates a new workspace.</p>
-<input id="wsname" placeholder="Company name or code, e.g. Acme Foods" maxlength="40">
-<div id="gnew" style="display:none;margin-top:10px"><input id="wsphone" type="tel" inputmode="tel" placeholder="WhatsApp number that receives the final order list"></div>
-<button class="btn" id="wsgo" style="margin-top:12px;width:100%">Continue</button></div></div>
+<div class="md on" id="gate"><div class="mb"><h2>Office <span>tea break</span></h2>
+<p class="sub" id="gs" role="status">Connecting to your office…</p>
+<button class="btn" id="wsgo" style="margin-top:12px;width:100%">Retry connection</button></div></div>
+<dialog id="admin-login" class="mb" aria-labelledby="admin-login-title"><form id="admin-login-form">
+<h2 id="admin-login-title">Office admin</h2><p class="sub">Enter the office admin password.</p>
+<label for="admin-password">Password</label><input id="admin-password" type="password" autocomplete="current-password" required maxlength="128">
+<p id="admin-login-error" role="alert"></p><div class="abtn"><button class="btn" type="submit" id="admin-submit">Sign in</button><button class="cancel" type="button" id="admin-cancel">Cancel</button></div></form></dialog>
 <header><div class="wrap"><a class="menu-home" href="./demos/virtual-shop-model.html" aria-label="Back to Chaya Kada">←</a><div class="logo" id="logo">Chaya Kada</div>
 <a href="#tea" data-go="tea">Tea &amp; Coffee</a><a href="#snacks" data-go="snacks">Snacks</a><a href="#totals" data-go="totals">Totals</a><a href="#hist" data-go="hist">History</a><a href="#admin" data-go="admin" class="adm">Admin</a>
-<button class="chip swb" id="sw" style="background:#fff">Switch to user view</button><button class="chip" id="cnt">Cart: 0</button></div></header>
+<button class="chip" id="admin-access">Admin sign in</button><button class="chip swb" id="sw" style="background:#fff">Switch to user view</button><button class="chip" id="cnt">Cart: 0</button></div></header>
 
 <main class="wrap">
 <div class="menu-layout">
@@ -152,7 +154,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
  </div>
 </div>
 
-<section id="admin" class="rv admbox"><div class="panel" style="border-color:var(--y)"><h2>Admin <span>panel</span></h2><p class="sub">All of today’s orders by team member. When everyone has ordered, close orders and send the list on WhatsApp.</p><div style="overflow-x:auto" id="al"></div><div class="two" style="grid-template-columns:1fr auto;margin-top:14px"><input id="admph" type="tel" inputmode="tel" placeholder="WhatsApp number to receive orders"><button class="btn adm" id="admsave">Save number</button></div><div class="abtn"><button class="btn adm" id="sendtot">Send total list to WhatsApp</button><button class="cancel adm" id="closeb">Close today’s orders</button><button class="cancel adm" id="reset">Clear today’s orders</button></div></div></section>
+<section id="admin" class="rv admbox"><div class="panel" style="border-color:var(--y)"><h2>Admin <span>panel</span></h2><p class="sub">All of today’s orders by team member. When everyone has ordered, close orders and send the list on WhatsApp.</p><div style="overflow-x:auto" id="al"></div><form id="menu-price-form" style="margin:24px 0"><h3>Menu prices</h3><p class="sub">Prices in rupees. Saved changes apply to new orders; previous orders keep their original prices.</p><div id="menu-price-fields" class="two"></div><div class="abtn"><button class="btn" id="save-menu-prices" type="submit">Save menu prices</button></div><p id="menu-price-status" role="status"></p></form><div class="two" style="grid-template-columns:1fr auto;margin-top:14px"><input id="admph" type="tel" inputmode="tel" placeholder="WhatsApp number to receive orders"><button class="btn adm" id="admsave">Save number</button></div><div class="abtn"><button class="btn adm" id="sendtot">Send total list to WhatsApp</button><button class="cancel adm" id="closeb">Close today’s orders</button><button class="cancel adm" id="reset">Clear today’s orders</button></div></div></section>
 <section id="totals" class="rv"><div class="panel"><h2>Total <span>Orders</span></h2>
 <p class="sub" id="live">Counting everyone’s orders…</p>
 <div class="big" id="big"></div><div class="tg" id="tg"></div>
@@ -181,7 +183,7 @@ const fixedMenu=[["tea2","ST"],["tea0","NT"],["tea1","LT"],["cof2","SC"],["cof0"
 const MENU=fixedMenu.map(([id,code])=>({...ITEMS.find(item=>item.id===id),code}));
 const $=s=>document.querySelector(s);
 const menuSection = ["tea", "snacks"].find(section => location.hash === "#" + section);
-let cart={},orders={},myId="local",db=null,placed=false,images={},upKey=null,SLUG="",WS=null,allOrders=[],lastH="",entered=false,asUser=false,isOwn=false;function applyRole(){document.body.classList.toggle("ed",isOwn&&!asUser);document.body.classList.toggle("isowner",isOwn);document.body.classList.toggle("isadm",isOwn&&!asUser);const b=document.getElementById("sw");if(b)b.textContent=asUser?"Switch to admin view":"Switch to user view"}
+let cart={},orders={},myId="local",db=null,placed=false,images={},upKey=null,SLUG="",WS=null,allOrders=[],lastH="",entered=false,asUser=false,isOwn=false;function applyRole(){document.body.classList.toggle("ed",isOwn&&!asUser);document.body.classList.toggle("isowner",isOwn);document.body.classList.toggle("isadm",isOwn&&!asUser);const b=document.getElementById("sw");if(b)b.textContent=asUser?"Switch to admin view":"Switch to user view";const access=document.getElementById("admin-access");if(access)access.textContent=isOwn?"Sign out admin":"Admin sign in"}
 function dayStr(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function esc(t){return String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 const today=dayStr(new Date());
@@ -257,7 +259,7 @@ const drinkGroups=["Tea","Coffee"].map(category=>{
 const groupByItem=new Map(drinkGroups.flatMap(group=>group.options.map(item=>[item.id,group])));
 
 function itemControls(item){
- return `<div class="row"><span class="pr">${item.p===null?"Price pending":"₹"+item.p}</span><span class="tot" id="t-${item.id}"></span></div><div id="a-${item.id}"></div>`;
+ return `<div class="row"><span class="pr" data-menu-price="${item.id}">${item.p===null?"Price pending":"₹"+item.p}</span><span class="tot" id="t-${item.id}"></span></div><div id="a-${item.id}"></div>`;
 }
 function card(item){
  const group=groupByItem.get(item.id);
@@ -280,6 +282,38 @@ $("#g-snacks").innerHTML=MENU.filter(i=>i.c=="Snacks").map(card).join("");
 const menuPhotos={tea:"product-1.webp",cof:"product-3.webp",sn0:"product-6.webp",sn1:"product-5.webp",sn2:"ullivada.webp",sn5:"parippuvada.webp",sn6:"sugiyan.webp",sn7:"pathiri.webp",sn4:"puffs.webp",lime:"lime.webp"};
 const categories=[...document.querySelectorAll("[data-category]")];
 let selectedCategory=menuSection==="snacks"?"Snacks":"";
+function applyMenuPrices(rows){
+ for(const row of rows){
+  const value=Number(row.price);if(!Number.isFinite(value)||value<0)continue;
+  const item=ITEMS.find(item=>item.id===row.item);if(item)item.p=value;
+  const menuItem=MENU.find(item=>item.id===row.item);if(menuItem)menuItem.p=value;
+  document.querySelectorAll(`[data-menu-price="${row.item}"]`).forEach(label=>label.textContent="₹"+value);
+ }
+ const form=$("#menu-price-form");
+ if(!form.dataset.initialized){
+  $("#menu-price-fields").innerHTML=MENU.map(item=>`<label for="price-${item.id}">${esc(item.n)}${item.code?" ("+item.code+")":""}<input id="price-${item.id}" data-price-item="${item.id}" type="number" inputmode="decimal" min="0" max="10000" step="0.01" required value="${item.p}"></label>`).join("");
+  form.dataset.initialized="true";
+ }else if(!form.dataset.dirty){
+  form.querySelectorAll('[data-price-item]').forEach(input=>input.value=ITEMS.find(item=>item.id===input.dataset.priceItem).p);
+ }
+}
+$("#menu-price-form").addEventListener("input",()=>{$("#menu-price-form").dataset.dirty="true";$("#menu-price-status").textContent="Unsaved changes";});
+$("#menu-price-form").onsubmit=async event=>{
+ event.preventDefault();if(!db||!isOwn||asUser)return;
+ const button=$("#save-menu-prices");button.disabled=true;
+ const prices=Object.fromEntries([...document.querySelectorAll('[data-price-item]')].map(input=>[input.dataset.priceItem,Number(input.value)]));
+ try{
+  await result(db.rpc("ots_set_menu_prices",{prices}));
+  delete $("#menu-price-form").dataset.dirty;
+  applyMenuPrices(Object.entries(prices).map(([item,price])=>({item,price})));render();
+  $("#menu-price-status").textContent="Menu prices saved.";
+ }catch(error){$("#menu-price-status").textContent="Prices were not saved. Check your admin sign-in and try again.";}
+ finally{button.disabled=false;}
+};
+function recordedPrice(order,item){return Number(order.unit_prices?.[item.id]??item.p);}
+function orderAmount(order){return ITEMS.reduce((cents,item)=>cents+Math.round((order.items?.[item.id]||0)*recordedPrice(order,item)*100),0)/100;}
+function cartItemPrice(item){return placed&&orders[myId]?recordedPrice(orders[myId],item):item.p;}
+function cartAmount(){return ITEMS.reduce((cents,item)=>cents+Math.round((cart[item.id]||0)*cartItemPrice(item)*100),0)/100;}
 function showDrinkStrength(group){
  const card=$("#c-"+group.defaultItem.id);
  const strength=card.querySelector("select");
@@ -365,14 +399,14 @@ function sums(src){const s={},c={Tea:0,Coffee:0,Snacks:0,Lime:0};
 function render(){
  MENU.forEach(act);
  drinkGroups.forEach(showDrinkStrength);
- const n=Object.values(cart).reduce((a,b)=>a+b,0),amt=ITEMS.reduce((a,i)=>a+(cart[i.id]||0)*i.p,0);
+ const n=Object.values(cart).reduce((a,b)=>a+b,0),amt=cartAmount();
  const cartLabel="Cart: "+n;if($("#cnt").textContent!==cartLabel)$("#cnt").textContent=cartLabel;$("#bc").textContent=n+" item"+(n==1?"":"s");$("#bt").textContent="Total ₹"+amt+(placed?" · order placed ✓":"");
  $("#bar").classList.toggle("show",n>0||placed);
  $("#bplace").disabled=!n;
  $("#bcancel").disabled=!n&&!placed;
  $("#payment").hidden=!placed||!db;
  const selected=ITEMS.filter(it=>cart[it.id]);
- const orderItems=selected.length?selected.map(it=>`<div><span>${cart[it.id]} × ${it.n}</span><b>₹${cart[it.id]*it.p}</b>${!groupByItem.has(it.id)&&MENU.some(item=>item.id===it.id)?"":`<button type="button" data-a="x" data-i="${it.id}" aria-label="Remove ${it.n}">×</button>`}</div>`).join(""):"<p>Your cart is empty.</p>";
+ const orderItems=selected.length?selected.map(it=>`<div><span>${cart[it.id]} × ${it.n}</span><b>₹${Math.round(cart[it.id]*cartItemPrice(it)*100)/100}</b>${!groupByItem.has(it.id)&&MENU.some(item=>item.id===it.id)?"":`<button type="button" data-a="x" data-i="${it.id}" aria-label="Remove ${it.n}">×</button>`}</div>`).join(""):"<p>Your cart is empty.</p>";
  if($("#menu-cart-items").dataset.items!==orderItems){
   $("#menu-cart-items").innerHTML=orderItems;
   $("#menu-cart-items").dataset.items=orderItems;
@@ -386,9 +420,9 @@ function render(){
  const rows=ITEMS.filter(i=>s[i.id]);
  $("#tg").innerHTML=rows.length?rows.map(i=>`<div>${i.n}<b>${s[i.id]}</b></div>`).join(""):'<div style="grid-column:1/-1;color:var(--mut)">No orders yet.</div>';
  const h=histHtml();if(h!==lastH){lastH=h;$("#hl").innerHTML=h}
- let gt=0;const SM=sums(orders);const sumHtml='<div class="tg">'+ITEMS.filter(i=>SM.s[i.id]).map(i=>"<div>"+i.n+"<b>"+SM.s[i.id]+"</b></div>").join("")+"</div>";const A=Object.values(orders).map(o=>{let a=0;const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{a+=o.items[i.id]*i.p;return o.items[i.id]+" "+i.n}).join(", ");gt+=a;const tm=o.at?new Date(o.at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";return "<tr><td>"+esc(o.name||"?")+"</td><td>"+tm+"</td><td>"+esc(t)+"</td><td>₹"+a+"</td></tr>"}).join("");
+ let gt=0;const SM=sums(orders);const sumHtml='<div class="tg">'+ITEMS.filter(i=>SM.s[i.id]).map(i=>"<div>"+i.n+"<b>"+SM.s[i.id]+"</b></div>").join("")+"</div>";const A=Object.values(orders).map(o=>{let a=orderAmount(o);const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{return o.items[i.id]+" "+i.n}).join(", ");gt=Math.round((gt+a)*100)/100;const tm=o.at?new Date(o.at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";return "<tr><td>"+esc(o.name||"?")+"</td><td>"+tm+"</td><td>"+esc(t)+"</td><td>₹"+a+"</td></tr>"}).join("");
  $("#al").innerHTML=A?'<table class="at"><tr><th>Team member</th><th>Time</th><th>Order</th><th>Amount</th></tr>'+A+'<tr><td colspan="3"><b>Grand total</b></td><td><b>₹'+gt+'</b></td></tr></table>'+'<div class="msg" style="margin:10px 0 4px">'+Object.keys(orders).length+' people ordered · Tea '+SM.c.Tea+' · Coffee '+SM.c.Coffee+' · Snacks '+SM.c.Snacks+'</div>'+sumHtml:'<div class="msg">No orders yet today.</div>'
- if(db&&WS)$("#live").textContent=(WS.closed===today?"🔒 Orders closed for today · ":"")+"Workspace code: "+SLUG;
+ if(db&&WS)$("#live").textContent=(WS.closed===today?"🔒 Orders closed for today · ":"")+WS.name+" · Office orders";
  const ppl=Object.values(orders).filter(o=>o.name);
  $("#people").textContent=ppl.length?"Ordered by: "+ppl.map(o=>o.name).join(", "):"";
 }
@@ -433,21 +467,23 @@ fi.onchange=async()=>{
  }catch(error){alert("Photo upload failed. Please try again.")}
 };
 function receipt(){const nm=$("#name").value.trim(),ph=$("#phone").value.trim();
- const L=ITEMS.filter(i=>cart[i.id]).map(i=>"• "+cart[i.id]+" × "+i.n+" = ₹"+cart[i.id]*i.p);
- const amt=ITEMS.reduce((a,i)=>a+(cart[i.id]||0)*i.p,0);
+ const L=ITEMS.filter(i=>cart[i.id]).map(i=>"• "+cart[i.id]+" × "+i.n+" = ₹"+Math.round(cart[i.id]*cartItemPrice(i)*100)/100);
+ const amt=cartAmount();
  return{amt,L,text:"*Office Tea & Snacks – Order*\nName: "+nm+"\nPhone: "+ph+"\n\n"+L.join("\n")+"\n\n*Total: ₹"+amt+"*\nPay to UPI: jinshadk007@okicici"}}
 $("#bplace").onclick=async()=>{
  const nm=$("#name").value.trim(),ph=fixNum($("#phone").value);
  if(!nm){$("#who").scrollIntoView();memberPicker.open=true;memberSummary.focus();alert("Please select your name first.");return}
- if(WS&&WS.closed===today&&(WS.admin!==myId||asUser)){alert("Orders are closed for today.");return}
+ if(WS&&WS.closed===today&&(!isOwn||asUser)){alert("Orders are closed for today.");return}
  if(allOrders.some(o=>o.day===today&&o.uid!==myId&&(o.name||"").toLowerCase()===nm.toLowerCase())){alert("This team member already has an order today.");return}
  const button=$("#bplace");
  if(!Object.keys(cart).length){alert("Select at least one item.");return}
  button.disabled=true;
  try{
-  if(db) await result(db.rpc("ots_save_order",{
+  if(db){await result(db.rpc("ots_save_order",{
    code:SLUG,order_day:today,customer:nm,number:ph,quantities:cart,ordered_at:Date.now()
   }));
+  orders[myId]=await result(db.from("ots_orders").select("day,uid,name,phone,items,at,unit_prices").match({slug:SLUG,day:today,uid:myId}).single());
+  }
  }catch(error){
   alert("Could not save the order. Check whether orders are open and try again.");return;
  }finally{button.disabled=false}
@@ -466,12 +502,12 @@ $("#payment").onclick=showPayment;
 $("#mx").onclick=()=>$("#md").classList.remove("on");
 function totalsText(list,day){const {s,c}=sums(list);
  const line=cat=>ITEMS.filter(i=>i.c==cat&&s[i.id]).map(i=>"  - "+i.n+": "+s[i.id]).join("\n");
- let amt=0;const ppl=list.map(o=>{let a=0;const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{a+=o.items[i.id]*i.p;return o.items[i.id]+" "+i.n}).join(", ");amt+=a;return "• "+(o.name||"?")+(o.phone?" ("+o.phone+")":"")+": "+t+" = ₹"+a});
+ let amt=0;const ppl=list.map(o=>{let a=orderAmount(o);const t=ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>{return o.items[i.id]+" "+i.n}).join(", ");amt=Math.round((amt+a)*100)/100;return "• "+(o.name||"?")+(o.phone?" ("+o.phone+")":"")+": "+t+" = ₹"+a});
  return "*"+(WS?WS.name:"Office")+" order totals – "+day+"*\n\n*Tea total: "+c.Tea+"*\n"+line("Tea")+"\n\n*Coffee total: "+c.Coffee+"*\n"+line("Coffee")+"\n\n*Snacks total: "+c.Snacks+"*\n"+line("Snacks")+"\n\n*Lime total: "+c.Lime+"*\n"+line("Lime")+"\n\n*Who ordered*\n"+ppl.join("\n")+"\n\n*Grand total: ₹"+amt+"*"}
 const sendTo=()=>fixNum(WS&&WS.phone||OFFICE);
 $("#sendtot").onclick=()=>wa(sendTo(),totalsText(allOrders.filter(o=>o.day==today),today));
 function histHtml(){return [0,1,2].map(n=>{const day=recentDays[n],L=allOrders.filter(o=>o.day==day),{c}=sums(L);let amt=0;
- L.forEach(o=>Object.entries(o.items||{}).forEach(([id,q])=>{const it=ITEMS.find(x=>x.id==id);if(it)amt+=q*it.p}));
+ amt=L.reduce((cents,o)=>cents+Math.round(orderAmount(o)*100),0)/100;
  const lines=L.map(o=>"• "+esc(o.name||"?")+": "+ITEMS.filter(i=>(o.items||{})[i.id]).map(i=>o.items[i.id]+" "+i.n).join(", ")).join("<br>")||"No orders";
  return `<details class="dd"><summary><b>${n==0?"Today":n==1?"Yesterday":day}</b> · ${L.length} orders · ₹${amt} · Tea ${c.Tea} · Coffee ${c.Coffee} · Snacks ${c.Snacks} · Lime ${c.Lime}</summary><div class="rc">${lines}</div><button class="cancel adm" data-h="${day}">Send this list to WhatsApp</button></details>`}).join("")}
 document.addEventListener("click",e=>{
@@ -501,7 +537,7 @@ $("#admsave").onclick=async()=>{
 };
 $("#sw").onclick=()=>{asUser=!asUser;applyRole()};
 $("#closeb").onclick=async()=>{
- if(!db||!WS)return;
+ if(!db||!WS||!isOwn)return;
  try{await updateWorkspace({closed:WS.closed===today?null:today})}
  catch(error){alert("Could not change whether orders are open.")}
 };
@@ -515,7 +551,7 @@ $("#reset").onclick=async()=>{
 function showWorkspace(workspace){
  WS=workspace;
  $("#logo").textContent="☕ "+WS.name;
- isOwn=WS.admin===myId;applyRole();
+ applyRole();
  if(document.activeElement!==$("#admph"))$("#admph").value=WS.phone.replace(/^91/,"");
  $("#closeb").textContent=WS.closed===today?"Reopen today’s orders":"Close today’s orders";
  render();
@@ -524,12 +560,14 @@ let refreshId=0, appliedRefreshId=0;
 async function refreshWorkspace(restoreOrder=false){
  const requestId=++refreshId;
  try{
-  const [workspace,rows]=await Promise.all([
+  const [workspace,rows,adminStatus,prices]=await Promise.all([
    result(db.from("ots_workspaces").select().eq("slug",SLUG).single()),
-   result(db.from("ots_orders").select("day,uid,name,phone,items,at").eq("slug",SLUG).in("day",recentDays))
+   result(db.from("ots_orders").select("day,uid,name,phone,items,at,unit_prices").eq("slug",SLUG).in("day",recentDays)),
+   result(db.rpc("ots_admin_status")),
+   result(db.from("ots_menu_prices").select("item,price").eq("slug",SLUG))
   ]);
   if(requestId<appliedRefreshId)return;
-  appliedRefreshId=requestId;
+  appliedRefreshId=requestId;isOwn=adminStatus;applyMenuPrices(prices);
   allOrders=rows.map(order=>({...order,items:Object.fromEntries(ITEMS
    .filter(it=>Number.isSafeInteger(order.items[it.id])&&order.items[it.id]>0)
    .map(it=>[it.id,order.items[it.id]]))}));
@@ -547,9 +585,12 @@ async function refreshWorkspace(restoreOrder=false){
 }
 async function enter(slug){
  if(entered)return;
- entered=true;SLUG=slug;
- try{localStorage.setItem("ots-ws",slug);location.hash=slug}catch(error){}
+ SLUG=slug;
+ if(/^[a-f0-9]{32}$/.test(location.hash.slice(1)))history.replaceState(null,"",location.pathname+location.search);
+ isOwn=await result(db.rpc("ots_admin_status"));
  await refreshWorkspace(true);
+ if(!WS)throw new Error("Office could not load");
+ entered=true;
  $("#gate").classList.remove("on");
  scheduleCarousel();
  if(menuSection)document.getElementById(menuSection).scrollIntoView();
@@ -559,36 +600,31 @@ async function enter(slug){
   images=Object.fromEntries(photos.map(photo=>[photo.item,photo.src]));setPics();
  }catch(error){console.error("Could not load workspace photos",error)}
 }
-let pendingName="";
-$("#wsname").oninput=()=>{
- pendingName="";$("#gnew").style.display="none";
- $("#gs").textContent="Enter an invite code to join, or enter your company name to create a workspace.";
+async function openOffice(){
+ const button=$("#wsgo");button.disabled=true;
+ try{await connect();const code=await result(db.rpc("ots_join_office"));await enter(code);}
+ catch(error){$("#gs").textContent=connectionMessage(error);}
+ finally{button.disabled=false;}
+}
+$("#wsgo").onclick=openOffice;
+$("#admin-access").onclick=async()=>{
+ if(isOwn){
+  try{await result(db.rpc("ots_admin_logout"));isOwn=false;asUser=false;applyRole();render();}
+  catch(error){alert("Could not sign out. Please try again.");}return;
+ }
+ $("#admin-login-error").textContent="";$("#admin-password").value="";
+ $("#admin-login").showModal();$("#admin-password").focus();
 };
-$("#wsgo").onclick=async()=>{
- const nm=$("#wsname").value.trim(),button=$("#wsgo");
- if(!nm)return;
- button.disabled=true;
+$("#admin-cancel").onclick=()=>$("#admin-login").close();
+$("#admin-login-form").onsubmit=async event=>{
+ event.preventDefault();const button=$("#admin-submit");button.disabled=true;
  try{
-  if(/^[a-f0-9]{32}$/i.test(nm)){
-   await connect();
-   const code=nm.toLowerCase();
-   if(await result(db.rpc("ots_open_workspace",{code})))await enter(code);
-   else $("#gs").textContent="Workspace code not found. Check the code and try again.";
-   return;
-  }
-  if(pendingName!==nm){
-   pendingName=nm;$("#gnew").style.display="block";
-   $("#gs").textContent="Enter a WhatsApp number to create “"+nm+"” and become its admin.";
-   return;
-  }
-  const whatsapp=fixNum($("#wsphone").value);
-  if(whatsapp.length<12){alert("Enter the WhatsApp number that receives the final order list.");return}
-  await connect();
-  const code=Array.from(crypto.getRandomValues(new Uint8Array(16)),byte=>byte.toString(16).padStart(2,"0")).join("");
-  await result(db.rpc("ots_open_workspace",{code,title:nm,whatsapp}));
-  await enter(code);
- }catch(error){$("#gs").textContent=connectionMessage(error)}
- finally{button.disabled=false}
+  await connect();const ok=await result(db.rpc("ots_admin_login",{password:$("#admin-password").value}));
+  $("#admin-password").value="";
+  if(!ok){$("#admin-login-error").textContent="Incorrect password, or too many attempts. Please try again later.";return;}
+  isOwn=true;asUser=false;applyRole();render();$("#admin-login").close();$("#admin").scrollIntoView();
+ }catch(error){$("#admin-login-error").textContent="Admin sign-in could not connect. Please try again.";}
+ finally{button.disabled=false;}
 };
 // Carousel
 const banner=$("#banner"), slides=[...banner.querySelectorAll(".slide")];
@@ -671,7 +707,7 @@ function connect(){
 function connectionMessage(error){
  console.error("Workspace connection failed",error);
  if(error.code==="anonymous_provider_disabled")return "Workspace sign-in is disabled. Ask the site admin to enable anonymous sign-ins in Supabase.";
- return "Could not connect to the workspace. Please try again.";
+ return "Could not connect to your office. Please try again.";
 }
 window.addEventListener("DOMContentLoaded",async()=>{
  if(["localhost","127.0.0.1"].includes(location.hostname)&&new URLSearchParams(location.search).has("demo")){
@@ -684,14 +720,6 @@ window.addEventListener("DOMContentLoaded",async()=>{
   scheduleCarousel();
   return;
  }
- const code=(menuSection?"":location.hash.slice(1))||safe("ots-ws");
- if(!/^[a-f0-9]{32}$/.test(code))return;
- const button=$("#wsgo");button.disabled=true;
- try{
-  await connect();
-  if(await result(db.rpc("ots_open_workspace",{code})))await enter(code);
-  else $("#gs").textContent="Workspace code not found. Check the code and try again.";
- }catch(error){$("#gs").textContent=connectionMessage(error)}
- finally{button.disabled=false}
+ await openOffice();
 });
 </script></body></html>
