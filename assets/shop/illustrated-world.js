@@ -1,4 +1,5 @@
 import * as THREE from './vendor/three.module.min.js';
+import { createFramePlayer } from './frame-player.js';
 
 // The reference's hand-inked yellow kiosk palette, applied to the existing 3D journey.
 export function illustrateShop(world,scene,renderer,onReady=()=>{}){
@@ -50,21 +51,55 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
   const ink=new THREE.LineBasicMaterial({color:'#33362e',transparent:true,opacity:.32});
   for(const mesh of meshes)mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,35),ink));
 
-  // Separate illustrated benches leave the central doorway route clear.
+  const benchClocks=[];
+  const benchPlayers=[];
+  // Upper-body movement leaves the seats and feet anchored in place.
   addBench('./friends-bench/friends-bench.png','Two friends sharing tea on a wooden bench',-3.05,2.65,1.95,'friendsBench');
-  addBench('./couple-bench/couple-bench-v2.png','Two friends enjoying tea together on the front wooden bench',3.15,4.6,2.02,'coupleBench');
+  addAnimatedBench();
+  function addAnimatedBench(){
+    const source=document.createElement('canvas');source.width=960;source.height=540;source.hidden=true;document.querySelector('.actor-cache').append(source);
+    const texture=new THREE.CanvasTexture(source);texture.colorSpace=THREE.SRGBColorSpace;
+    texture.generateMipmaps=false;texture.minFilter=THREE.LinearFilter;
+    const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.035,depthWrite:true,toneMapped:false});
+    const height=2.15;
+    const bench=new THREE.Mesh(new THREE.PlaneGeometry(height*960/540,height),material);
+    bench.name='Couple sipping tea on the front bench';bench.position.set(3.15,height/2-.1,4.6);group.add(bench);
+    const player=createFramePlayer(source,{folder:new URL('./couple-bench/motion/',import.meta.url),count:95,cacheSize:18,onDraw(){texture.needsUpdate=true;renderer.domElement.dataset.coupleFrame=source.dataset.frame;onReady();}});
+    benchPlayers.push(player);
+    const poster=new Image();poster.src=new URL('./couple-bench/motion/frame-0001.webp',import.meta.url);
+    poster.decode().then(()=>{source.getContext('2d').drawImage(poster,0,0,960,540);texture.needsUpdate=true;onReady();}).catch(()=>{});
+    addEventListener('pagehide',()=>{player.destroy();texture.dispose();material.dispose();bench.geometry.dispose();},{once:true});
+  }
   function addBench(path,name,x,z,height,status){
     new THREE.TextureLoader().load(new URL(path,import.meta.url).href,texture=>{
       texture.colorSpace=THREE.SRGBColorSpace;
       texture.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
       const width=height*texture.image.width/texture.image.height;
-      const bench=new THREE.Mesh(new THREE.PlaneGeometry(width,height),new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.035,depthWrite:true,toneMapped:false}));
+      const clock={value:0};benchClocks.push(clock);
+      const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.035,depthWrite:true,toneMapped:false});
+      material.onBeforeCompile=shader=>{
+        shader.uniforms.benchTime=clock;
+        shader.vertexShader='uniform float benchTime;\n'+shader.vertexShader;
+        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
+          float body=smoothstep(0.30,0.65,uv.y);
+          float person=step(0.51,uv.x);
+          float phase=benchTime+person*2.2+${z.toFixed(2)};
+          transformed.x+=sin(phase*0.9)*0.014*body;
+          transformed.y+=sin(phase*1.4)*0.008*body;
+        `);
+      };
+      material.customProgramCacheKey=()=>`bench-idle-${status}`;
+      const bench=new THREE.Mesh(new THREE.PlaneGeometry(width,height,40,32),material);
       bench.name=name;bench.position.set(x,height/2-.10,z);group.add(bench);
       if(renderer.domElement)renderer.domElement.dataset[status]='ready';
       onReady();
     },undefined,error=>console.warn('A bench illustration could not be loaded.',error));
   }
 
+  return (seconds,enabled)=>{
+    for(const clock of benchClocks)clock.value=enabled?seconds:0;
+    for(const player of benchPlayers){player.setActive(enabled);player.setProgress(enabled?(seconds%8)/8:0);}
+  };
 }
 function grain(){
   const c=document.createElement('canvas');c.width=c.height=256;const ctx=c.getContext('2d');ctx.fillStyle='#fff6d5';ctx.fillRect(0,0,256,256);

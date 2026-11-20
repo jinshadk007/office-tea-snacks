@@ -1,0 +1,13 @@
+{
+  "provider": "Google Flow",
+  "account": "VenVision",
+  "project": "https://flow.google.com/project/7ddc7047-c2f3-4e17-b778-61f4ad3ef978",
+  "model": "Veo 3.1 Lite",
+  "credits": 10,
+  "duration": 8,
+  "resolution": "720p",
+  "fps": 12,
+  "frames": 95,
+  "action": "Couple gently sip tea, smile, blink and turn their heads while seated. Preserve faces, clothes and ink/watercolor style; locked camera; magenta background for chroma key.",
+  "processing": "FFmpeg transparent WebP sequence with chroma key"
+}

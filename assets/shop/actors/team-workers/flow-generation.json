@@ -1,0 +1,15 @@
+{
+  "provider": "Google Flow",
+  "project": "https://flow.google.com/project/4fa5a637-36a8-42b6-ab65-f784b8240825",
+  "model": "Omni 1.2 Flash",
+  "duration": 8,
+  "sourceResolution": "720p portrait",
+  "framesPerSecond": 12,
+  "framesPerClip": 96,
+  "actions": {
+    "chai": "Stir tea in a steel tumbler",
+    "onion": "Mix ingredients in a steel bowl"
+  },
+  "remaining": "Snack shaping and frying character blocked by insufficient Flow credits",
+  "processing": "FFmpeg chroma key background removal and transparent WebP frames"
+}

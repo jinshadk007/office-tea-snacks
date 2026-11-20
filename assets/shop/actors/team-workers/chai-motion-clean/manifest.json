@@ -1,0 +1,5 @@
+{
+  "frames": 85,
+  "fps": 12,
+  "removed": "First 11 source frames had an opaque black background before the magenta transition."
+}

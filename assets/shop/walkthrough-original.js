@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import { buildTeaShop } from './tea-world.js';
 import { createFramePlayer } from './frame-player.js';
-import { illustrateShop } from './illustrated-world.js?v=front-bench-11';
+import { illustrateShop } from './illustrated-world.js?v=couple-flow-17';
 
 const track=document.querySelector('.walkthrough');
 const stage=document.querySelector('.world-stage');
@@ -18,9 +18,10 @@ const replay=document.querySelector('.journey-replay');
 const loader=document.querySelector('.world-loading');
 const clamp=n=>Math.max(0,Math.min(1,n));
 const smooth=n=>{n=clamp(n);return n*n*(3-2*n);};
-let renderer,scene,camera,world,raf=0,progress=0,target=0,lastTime=0,disposed=false;
+let renderer,scene,camera,world,raf=0,progress=0,target=0,lastTime=0,idleTimer=0,disposed=false;
 let currentChapter=-1,contextLost=false,hasRendered=false;
 const actors=[];
+let updateOutside=()=>{};
 // Looking is an offset from the scroll route; it never locks page scrolling.
 const view={yaw:0,pitch:0,targetYaw:0,targetPitch:0,pointer:null,x:0,y:0};
 const viewRotation=new THREE.Quaternion();
@@ -149,8 +150,8 @@ function copyAt(p) {
   }
   title.style.opacity=String(p<.145?1:.94);
   document.querySelector('.journey-copy').classList.toggle('is-intro',p<.145);
-  progressBar.style.transform=`scaleX(${p})`;
-  replay.hidden=p<.985;
+  if(progressBar)progressBar.style.transform=`scaleX(${p})`;
+  if(replay)replay.hidden=p<.985;
 }
 function render(time) {
   raf=0;if(disposed||contextLost||!renderer)return;
@@ -168,14 +169,20 @@ function render(time) {
   viewEuler.set(view.pitch,view.yaw,0,'YXZ');viewRotation.setFromEuler(viewEuler);
   camera.quaternion.multiply(viewRotation);
   copyAt(progress);
-  activate(actors[0],progress<.42,clamp(progress/.145));
+  const outsideVisible=progress<.42;
+  const teaPhase=motion.matches?(time/1000%8)/8:0;
+  activate(actors[0],outsideVisible,teaPhase);
+  updateOutside(time/1000,motion.matches&&outsideVisible);
   const cook=clamp((progress-.565)/.225);
   activate(actors[1],progress>.36&&progress<.88,cook);
   world.updateCooking(cook);
   const ensemble=clamp((progress-.81)/.19);
   const focusT=clamp((progress-.88)/.12)*3;
+  const workersVisible=progress>.20;
   actors.slice(2).forEach((actor,i)=>{
-    activate(actor,progress>.70,ensemble);
+    const duration=actor.name==='chai'?85/12:8;
+    const phase=motion.matches?((time/1000+i*.9)%duration)/duration:0;
+    activate(actor,workersVisible,actor.player?phase:ensemble);
     const prominence=progress<.88?.68:smooth(1-Math.abs(focusT-(i+.5)));
     actor.material.uniforms.focus.value=prominence;
     actor.mesh.position.z=actor.base.z+.42*prominence;
@@ -183,13 +190,16 @@ function render(time) {
   renderer.render(scene,camera);
   stage.dataset.progress=progress.toFixed(4);canvas.dataset.drawCalls=String(renderer.info.render.calls);canvas.dataset.triangles=String(renderer.info.render.triangles);canvas.dataset.camera=camera.position.toArray().map(n=>n.toFixed(2)).join(',');
   if(!hasRendered){hasRendered=true;loader.classList.add('is-ready');stage.classList.add('is-world-ready');}
+  clearTimeout(idleTimer);
   if(progress!==target||!viewSettled)schedule();
+  else if((workersVisible||outsideVisible)&&motion.matches)idleTimer=setTimeout(schedule,1000/12);
 }
 function schedule(){if(!raf&&!disposed&&!document.hidden)raf=requestAnimationFrame(render);}
 function resize(){if(!renderer)return;renderer.setPixelRatio(Math.min(devicePixelRatio||1,narrow.matches?1.35:1.6));renderer.setSize(stage.clientWidth,stage.clientHeight,false);camera.aspect=stage.clientWidth/stage.clientHeight;camera.updateProjectionMatrix();schedule();}
 function jump(p){const top=scrollY+track.getBoundingClientRect().top+(track.offsetHeight-stage.offsetHeight)*p;scrollTo({top,behavior:motion.matches?'smooth':'instant'});}
 chapterButtons.forEach(button=>button.addEventListener('click',()=>jump(Number(button.dataset.progress))));
-replay.addEventListener('click',()=>jump(0));
+replay?.addEventListener('click',()=>jump(0));
+document.querySelector('.journey-brand').addEventListener('click',event=>{event.preventDefault();resetView();jump(0);});
 function fallback(error){
   stage.classList.add('is-still');loader.classList.add('is-ready');
   document.querySelector('.still-notice').hidden=false;
@@ -204,10 +214,13 @@ try {
   scene=new THREE.Scene();scene.background=new THREE.Color('#aaa38c');scene.fog=new THREE.Fog('#aaa38c',19,45);
   camera=new THREE.PerspectiveCamera(42,1,.06,90);
   world=buildTeaShop(scene,renderer);
-  illustrateShop(world,scene,renderer,schedule);
+  updateOutside=illustrateShop(world,scene,renderer,schedule);
   addActor({name:'entrance-chai-maker',folder:'../flow-frames/chai-pour-712fcdb4/',count:119,width:960,height:540,size:1.65,position:[2.7,1.44,.56]});
   addActor({name:'pazhampori-cook',still:'./actors/new-cook/new-cook.png',width:960,height:540,size:1.75,position:[3.85,1.47,-6.55],rotation:-Math.PI/2});
-  for(const [i,role] of ['chai','onion','vada'].entries())addActor({name:role,still:`./actors/team-workers/${role}.png`,width:640,height:960,size:3.2,position:[-2+i*2,.9,-10.65]});
+  for(const [i,role] of ['chai','onion','vada'].entries()){
+    const animated=role!=='vada';
+    addActor({name:role,...(animated?{folder:`./actors/team-workers/${role==='chai'?'chai-motion-clean':role+'-motion'}/`,count:role==='chai'?85:96}:{still:`./actors/team-workers/${role}.png`}),width:animated?540:640,height:960,size:3.2,position:[-2+i*2,.9,-10.65]});
+  }
   // No continuous render loop when scrolling is settled.
   addEventListener('scroll',schedule,{passive:true});addEventListener('resize',resize);motion.addEventListener('change',schedule);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else schedule();});
@@ -215,4 +228,4 @@ try {
   canvas.addEventListener('webglcontextrestored',()=>{contextLost=false;stage.classList.remove('is-context-paused');actors.forEach(actor=>actor.texture.needsUpdate=true);resize();});
   resize();
 } catch(error){fallback(error);}
-addEventListener('pagehide',()=>{disposed=true;cancelAnimationFrame(raf);actors.forEach(actor=>{actor.player?.destroy();actor.texture.dispose();actor.material.dispose();actor.mesh.geometry.dispose();});renderer?.dispose();},{once:true});
+addEventListener('pagehide',()=>{disposed=true;clearTimeout(idleTimer);cancelAnimationFrame(raf);actors.forEach(actor=>{actor.player?.destroy();actor.texture.dispose();actor.material.dispose();actor.mesh.geometry.dispose();});renderer?.dispose();},{once:true});
