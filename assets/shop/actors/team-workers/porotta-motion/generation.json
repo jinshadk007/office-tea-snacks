@@ -1,0 +1,15 @@
+{
+  "tool": "Google Flow",
+  "account": "VenVision",
+  "model": "Veo 3.1 Lite",
+  "source_video": "Man_making_Kerala_porotta_8eb0e315.mp4",
+  "duration_seconds": 8,
+  "fps": 12,
+  "frame_count": 96,
+  "size": [
+    540,
+    960
+  ],
+  "background_key": "#bf5287",
+  "prompt": "Animate the ONE man in the reference image as an isolated hand-illustrated Kerala porotta chef. Preserve his exact face, curly hair, small moustache, mustard yellow rolled-sleeve shirt, cream mundu and sandals. Full body, centered, head and feet visible throughout, generous empty margins around hands. Completely replace the reference background with perfectly solid flat magenta #ff00ff, no shadows, no gradient, no floor, no furniture, no counter, no bowl, no extra people. Locked frontal camera, no zoom, no pan. He makes Kerala parotta/porotta: starts holding a small piece of pale dough at waist height, gently stretches it between both hands into a wide thin translucent sheet, lifts and swings/flips the sheet once between his hands like a skilled Kerala tea-shop porotta maker, then gathers it back to a small dough piece at waist height. Both hands stay anatomically correct and visible; dough visibly stretches and flutters. Keep all motion around waist and chest height, never above his head. Relaxed focused expression, natural elbow and shoulder motion, feet planted, body stays same size and position. Preserve the warm ink-and-watercolor illustration style, no photorealistic style change. One slow smooth 8-second action that ends in the starting pose for a seamless loop. No text or audio.\n"
+}

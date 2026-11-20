@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import { buildTeaShop } from './tea-world.js';
 import { createFramePlayer } from './frame-player.js';
-import { illustrateShop } from './illustrated-world.js?v=soft-horizon-warm-book-35';
+import { illustrateShop } from './illustrated-world.js?v=porotta-flow-38';
 
 const track=document.querySelector('.walkthrough');
 const stage=document.querySelector('.world-stage');
@@ -19,7 +19,7 @@ const loader=document.querySelector('.world-loading');
 const clamp=n=>Math.max(0,Math.min(1,n));
 const smooth=n=>{n=clamp(n);return n*n*(3-2*n);};
 let renderer,scene,camera,world,raf=0,progress=0,target=0,lastTime=0,idleTimer=0,disposed=false;
-let currentChapter=-1,contextLost=false,hasRendered=false;
+let currentChapter=-1,contextLost=false,hasRendered=false,startupReady=false;
 const actors=[];
 let updateOutside=()=>{};
 // Looking is an offset from the scroll route; it never locks page scrolling.
@@ -74,7 +74,7 @@ const chapters=[
  {until:.885,label:'05 / THE PREPARATION COUNTER',title:'Together, in the kitchen.',hint:'Three familiar hands. One shared space.'},
  {until:.93,label:'06 / CHAYA ADIKKAL',title:'The long pour.',hint:'Keep scrolling to shift focus'},
  {until:.97,label:'06 / ULLIVADA',title:'A little onion. A little care.',hint:'Keep scrolling to shift focus'},
- {until:1.01,label:'06 / PARIPPUVADA',title:'Made by hand.',hint:'You’re inside the chayakkada.'},
+ {until:1.01,label:'06 / POROTTA',title:'Stretch. Flip. Fold.',hint:'Porotta, made by hand.'},
 ];
 
 function actorMaterial(texture,width,height) {
@@ -110,7 +110,7 @@ function addActor({name,folder,still,count,width,height,size,position,rotation=0
   mesh.visible=false;
   const actor={name,player,mesh,material,texture,source,base:mesh.position.clone(),active:false};actors.push(actor);
   // First frames are also the static fallback while nearby animation frames decode.
-  const poster=new Image();poster.src=still?new URL(still,import.meta.url):new URL('frame-0001.webp',new URL(folder,import.meta.url));poster.decode().then(()=>{
+  const poster=new Image();poster.src=still?new URL(still,import.meta.url):new URL('frame-0001.webp',new URL(folder,import.meta.url));actor.ready=poster.decode().then(()=>{
     const context=source.getContext('2d');
     if(still){
       const scale=Math.min(width/poster.naturalWidth,height/poster.naturalHeight);
@@ -189,7 +189,7 @@ function render(time) {
   });
   renderer.render(scene,camera);
   stage.dataset.progress=progress.toFixed(4);canvas.dataset.drawCalls=String(renderer.info.render.calls);canvas.dataset.triangles=String(renderer.info.render.triangles);canvas.dataset.camera=camera.position.toArray().map(n=>n.toFixed(2)).join(',');
-  if(!hasRendered){hasRendered=true;loader.classList.add('is-ready');stage.classList.add('is-world-ready');}
+  if(!hasRendered&&startupReady){hasRendered=true;loader.classList.add('is-ready');stage.classList.add('is-world-ready');document.body.classList.remove('shop-booting');dispatchEvent(new Event('shop-ready'));}
   clearTimeout(idleTimer);
   if(progress!==target||!viewSettled)schedule();
   else if((workersVisible||outsideVisible)&&motion.matches)idleTimer=setTimeout(schedule,1000/12);
@@ -201,7 +201,7 @@ chapterButtons.forEach(button=>button.addEventListener('click',()=>jump(Number(b
 replay?.addEventListener('click',()=>jump(0));
 document.querySelector('.journey-brand').addEventListener('click',event=>{event.preventDefault();resetView();jump(0);});
 function fallback(error){
-  stage.classList.add('is-still');loader.classList.add('is-ready');
+  stage.classList.add('is-still');loader.classList.add('is-ready');document.body.classList.remove('shop-booting');dispatchEvent(new Event('shop-ready'));
   document.querySelector('.still-notice').hidden=false;
   track.style.minHeight='100svh';
   chapterButtons.forEach(button=>{button.disabled=true;});
@@ -218,9 +218,11 @@ try {
   addActor({name:'entrance-chai-maker',folder:'../flow-frames/chai-pour-712fcdb4/',count:119,width:960,height:540,size:1.65,position:[2.7,1.44,.56]});
   addActor({name:'pazhampori-cook',still:'./actors/new-cook/new-cook.png',width:960,height:540,size:1.75,position:[3.85,1.47,-6.55],rotation:-Math.PI/2});
   for(const [i,role] of ['chai','onion','vada'].entries()){
-    const animated=role!=='vada';
-    addActor({name:role,...(animated?{folder:`./actors/team-workers/${role==='chai'?'chai-motion-clean':role+'-motion'}/`,count:role==='chai'?85:96}:{still:`./actors/team-workers/${role}.png`}),width:animated?540:640,height:960,size:3.2,position:[-2+i*2,.9,-10.65]});
+    const animated=true;
+    addActor({name:role,...(animated?{folder:`./actors/team-workers/${role==='chai'?'chai-motion-clean':role==='vada'?'porotta-motion':role+'-motion'}/`,count:role==='chai'?85:96}:{still:`./actors/team-workers/${role}.png`}),width:animated?540:640,height:960,size:role==='vada'?3.65:3.2,position:[-2+i*2,.9,-10.65]});
   }
+  // Decode startup portraits before revealing the first complete rendered scene.
+  Promise.race([Promise.allSettled([updateOutside.ready,...actors.map(actor=>actor.ready)]),new Promise(resolve=>setTimeout(resolve,8000))]).then(()=>{startupReady=true;schedule();});
   // No continuous render loop when scrolling is settled.
   addEventListener('pattu-visibility',schedule);addEventListener('scroll',schedule,{passive:true});addEventListener('resize',resize);motion.addEventListener('change',schedule);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else schedule();});

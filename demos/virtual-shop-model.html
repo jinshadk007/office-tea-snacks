@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Step through the doorway of a traditional Kerala chayakkada. An interactive 3D journey through tea making, the kitchen and familiar hands at work.">
   <meta name="theme-color" content="#203628">
-  <title>Inside Chaya Kada — A Kerala Tea Shop</title>
+  <title>Inside Adivaram Chaaya Kada — A Kerala Tea Shop</title>
   <script>if(/^#[a-f0-9]{32}$/i.test(location.hash)||new URLSearchParams(location.search).has('demo'))location.replace('./order.html'+location.search+location.hash);</script>
   <link rel="preload" as="font" href="assets/fonts/instrument-serif-italic.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="image" href="assets/flow-frames/chai-pour-712fcdb4/frame-0001.webp">
@@ -14,17 +14,18 @@
   <link rel="preload" as="image" href="assets/shop/couple-bench/couple-bench-v2.png">
   <link rel="stylesheet" href="assets/credits-theme.css">
   <link rel="stylesheet" href="assets/shop/preload-book.css?v=1">
-  <script type="module" src="assets/shop/preload-book.js?v=warm-start-1"></script>
+  <script type="module" src="assets/shop/preload-book.js?v=porotta-flow-38"></script>
   <link rel="stylesheet" href="assets/shop/walkthrough.css?v=world-1">
   <link rel="preload" as="image" href="assets/shop/actors/new-cook/new-cook.png">
-  <script type="module" src="assets/shop/walkthrough-original.js?v=soft-horizon-warm-book-35"></script>
+  <script type="module" src="assets/shop/walkthrough-original.js?v=porotta-flow-38"></script>
 <style>
+.shop-booting{overflow:hidden}.world-loading{position:fixed;background:#f7f5ef;color:#516044;z-index:100}.world-loading .loading-mark{border-color:#849169;animation:tea-breathe 1.4s ease-in-out infinite}.world-loading p{font-size:12px;letter-spacing:.06em}.world-loading::after{content:"";width:100px;height:2px;background:linear-gradient(90deg,transparent,#849169,transparent);animation:tea-breathe 1.4s ease-in-out infinite}@keyframes tea-breathe{50%{opacity:.45}}@media(prefers-reduced-motion:reduce){.world-loading .loading-mark,.world-loading::after{animation:none}}
 .journey-navigation .journey-explore{width:auto;border-radius:16px;padding:0 12px;white-space:nowrap;background:#1f3026cc;font-size:11px;min-height:34px}
 .world-canvas{cursor:grab;touch-action:pan-y pinch-zoom}.is-looking .world-canvas{cursor:grabbing}
 @media(max-width:650px){.journey-navigation{flex-wrap:wrap}.journey-explore{order:3}.journey-copy{bottom:145px}}
-.shop-links{display:flex;align-items:center;gap:24px;font-family:var(--paper-serif,Georgia,serif);font-size:21px;font-style:italic}.shop-links a{padding:9px 0;border-bottom:1px solid transparent;white-space:nowrap}.shop-links a:hover{border-color:currentColor}.shop-links a:last-child{border:1px solid #7b806355;border-radius:24px;padding:9px 17px}.shop-links a:last-child:hover{background:#e9dfc9}.shop-links a span{font-size:15px;margin-left:5px}@media(max-width:650px){.journey-header{padding:20px 16px;gap:12px}.journey-brand strong{font-size:24px}.journey-brand .mark{display:none}.shop-links{gap:12px;font-size:17px}.shop-links a:last-child{padding:8px 11px}.journey-copy.is-intro{top:110px}}
+.shop-links{display:flex;align-items:center;gap:24px;font-family:var(--paper-serif,Georgia,serif);font-size:21px;font-style:italic}.shop-links a{padding:9px 0;border-bottom:1px solid transparent;white-space:nowrap}.shop-links a:hover{border-color:currentColor}.shop-links a:last-child{border:1px solid #7b806355;border-radius:24px;padding:9px 17px}.shop-links a:last-child:hover{background:#e9dfc9}.shop-links a span{font-size:15px;margin-left:5px}@media(max-width:650px){.journey-header{padding:20px 16px;gap:12px}.journey-brand strong{font-size:clamp(17px,3.8vw,24px)}.journey-brand .mark{display:none}.journey-brand strong{max-width:155px;display:block;line-height:1.05}.shop-links{gap:12px;font-size:17px}.shop-links a:last-child{padding:8px 11px}.journey-copy.is-intro{top:110px}}
 </style><link rel="stylesheet" href="assets/shop/illustrated-world.css?v=soft-mud-34"></head>
-<body class="virtual-kada">
+<body class="virtual-kada shop-booting">
   <a class="skip" href="#journey-navigation">Skip to scene navigation</a>
   <main id="main">
     <section id="home" class="walkthrough" aria-label="Explore the virtual Kerala tea shop">
@@ -32,7 +33,7 @@
         <img class="world-still" src="assets/shop/old-teashop/interior.webp" alt="A warm traditional Kerala tea shop interior" width="1536" height="1024">
         <canvas class="world-canvas" role="img" aria-label="A Kerala tea shop with two wooden benches outside: two friends sharing tea and snacks on one bench, and a couple enjoying tea together on the other, with a woman seated at a table inside and three friends washing cooking pots beside the shop. Scroll through the doorway to explore tea making, the frying area and the shared preparation counter."></canvas>
         <header class="journey-header">
-          <a class="journey-brand" href="demos/virtual-shop-model.html#home" aria-label="Chaya Kada, return to the entrance"><span class="mark" aria-hidden="true">ചാ</span><span><strong>Chaya Kada</strong><small>നമ്മുടെ ചായക്കട</small></span></a>
+          <a class="journey-brand" href="demos/virtual-shop-model.html#home" aria-label="Adivaram Chaaya Kada, return to the entrance"><span class="mark" aria-hidden="true">ചാ</span><span><strong>Adivaram Chaaya Kada</strong><small>നമ്മുടെ ചായക്കട</small></span></a>
           <nav class="shop-links" aria-label="Shop navigation">
             <a href="demos/pattu-book/">Pattu Book</a>
             <a href="order.html">Shop Menu <span aria-hidden="true">↗</span></a>
@@ -47,7 +48,7 @@
           <button type="button" class="journey-explore" title="Drag to look around. Scroll to move. Click to reset the view.">Reset view ↺</button>
         </div>
         <p class="still-notice" hidden>A still view of our chayakkada.</p>
-        <div class="world-loading" role="status"><span class="loading-mark" aria-hidden="true">ചാ</span><p>Opening the chayakkada…</p></div>
+        <div class="world-loading" role="status"><span class="loading-mark" aria-hidden="true">ചാ</span><p>Getting your chayakkada ready…</p></div>
         <div class="actor-cache" hidden aria-hidden="true"></div>
         <noscript><p class="still-notice">Enable JavaScript to explore the virtual tea shop.</p></noscript>
       </div>

@@ -33,3 +33,13 @@ The shop also uses [Animate On Scroll 2.3.4](https://github.com/michalsnik/aos/t
 The gallery uses the 3D ring and Flip transition from [Codrops ScrollBasedLayoutAnimations](https://github.com/codrops/ScrollBasedLayoutAnimations/tree/729029a0f2c31e7c39e15d5c6433a0f4f2bac498) under its [MIT license](assets/shop/codrops/LICENSE). The featured panel plays frames from `assets/shop/gallery-frames/` during the final part of the scroll. To swap in a new video, export sequential WebP frames named `frame-001.webp`, `frame-002.webp`, and so on. List the filenames in playback order in `manifest.json`. The current sequence uses frames from the existing tea preview.
 
 The original demo pages and assets are copied from [Codrops ScrollBasedLayoutAnimations](https://github.com/codrops/ScrollBasedLayoutAnimations/tree/729029a0f2c31e7c39e15d5c6433a0f4f2bac498). The upstream license is in [demos/codrops/LICENSE](demos/codrops/LICENSE).
+
+### Member names and Pattu Book covers
+
+The office roster now contains 12 member books. Team Member 12 has a placeholder cover until an admin uploads a photo. In **Admin → Pattu Book cover photos**, admins can change each cover and save a unique member name (1–60 characters). These names and covers also appear in the order member selector. Existing purchase records retain the name recorded when ordered.
+
+Apply `supabase/migrations/20261120_member_covers.sql` for a new database. Member names and published book covers are readable for the public gallery; only signed-in office admins can change them. Uploaded images use the existing photo storage and 500 KB limit.
+
+The landing page reveals the scene after startup portraits decode (with an 8-second safety limit). Pattu Book warms after the initial shop scene is ready, so the two renderers do not compete during the first scene setup.
+
+The yellow-shirt preparation character now performs a Google Flow porotta stretching and flipping loop, generated in the VenVision account with Veo 3.1 Lite. Its 96 transparent WebP frames play at 12 fps only while that part of the scene is active; the player retains a small frame window rather than decoding the whole sequence at startup. Generation details and prompt are in `assets/shop/actors/team-workers/porotta-motion/generation.json`.

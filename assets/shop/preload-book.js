@@ -50,6 +50,8 @@ if (bookLinks.length) {
   });
   window.addEventListener('popstate',()=>showBook(Boolean(history.state?.pattuBook)));
   // Start the actual book during website startup; keep its initialized renderer for reuse.
-  mount();
+  if(document.querySelector('.world-loading')&&!document.querySelector('.is-world-ready')){
+    window.addEventListener('shop-ready',mount,{once:true});
+  }else mount();
   if(history.state?.pattuBook)showBook(true);
 }

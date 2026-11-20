@@ -53,9 +53,10 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
   for(const mesh of meshes)mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,35),ink));
 
   const benchPlayers=[];
+  const startupAssets=[];
   let servingGuest;
   world.building.children.filter(o=>o.isGroup&&Math.abs(o.position.z+5.55)<.02&&[-2.6,-1.65].some(x=>Math.abs(o.position.x-x)<.02)).forEach(o=>o.visible=false);
-  new THREE.TextureLoader().load(new URL('./guests/pink-salwar-side-seated.png',import.meta.url).href,texture=>{
+  startupAssets.push(new Promise(resolve=>new THREE.TextureLoader().load(new URL('./guests/pink-salwar-side-seated.png',import.meta.url).href,texture=>{
     texture.colorSpace=THREE.SRGBColorSpace;
     texture.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
     const height=1.8;
@@ -63,9 +64,9 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
     const guest=new THREE.Mesh(new THREE.PlaneGeometry(height*texture.image.width/texture.image.height,height),material);
     guest.name='Woman in a pink salwar seated at an interior table enjoying chai';
     guest.position.set(-3.0,height/2-.05,-5.3);group.add(guest);servingGuest=guest;
-    renderer.domElement.dataset.pinkSalwarGuest='ready';onReady();
+    renderer.domElement.dataset.pinkSalwarGuest='ready';onReady();resolve();
     addEventListener('pagehide',()=>{texture.dispose();material.dispose();guest.geometry.dispose();},{once:true});
-  },undefined,error=>console.warn('The tea shop guest could not be loaded.',error));
+  },undefined,error=>{console.warn('The tea shop guest could not be loaded.',error);resolve();})));
   addAnimatedBench({folder:'./friends-bench/motion/',name:'Friends sipping tea and eating snacks',x:-3.05,z:2.65,height:2.05,count:95,frameKey:'friendsFrame'});
   addAnimatedBench({folder:'./couple-bench/motion/',name:'Couple sipping tea on the front bench',x:3.15,z:4.6,height:2.15,count:95,frameKey:'coupleFrame'});
   addAnimatedBench({folder:'./washing-side/trio-motion/',name:'Three friends washing cooking pots beside the shop',x:7.0,z:.8,height:2.05,count:96,frameKey:'washingFrame'});
@@ -81,13 +82,15 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
     const player=createFramePlayer(source,{folder:new URL(folder,import.meta.url),count,cacheSize:18,onDraw(){texture.needsUpdate=true;renderer.domElement.dataset[frameKey]=source.dataset.frame;onReady();}});
     benchPlayers.push(player);
     const poster=new Image();poster.src=new URL('frame-0001.webp',new URL(folder,import.meta.url));
-    poster.decode().then(()=>{source.getContext('2d').drawImage(poster,0,0,960,540);texture.needsUpdate=true;onReady();}).catch(()=>{});
+    startupAssets.push(poster.decode().then(()=>{source.getContext('2d').drawImage(poster,0,0,960,540);texture.needsUpdate=true;onReady();}));
     addEventListener('pagehide',()=>{player.destroy();texture.dispose();material.dispose();bench.geometry.dispose();},{once:true});
   }
-  return (seconds,enabled,cleaningActive)=>{
+  const update=(seconds,enabled,cleaningActive)=>{
     if(servingGuest){servingGuest.rotation.z=cleaningActive?Math.sin(seconds*1.25)*.006:0;}
     for(const player of benchPlayers){player.setActive(enabled);player.setProgress(enabled?(seconds%8)/8:0);}
   };
+  update.ready=Promise.allSettled(startupAssets);
+  return update;
 }
 function lightSky(){
   const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=1024;
@@ -132,5 +135,5 @@ function grain(){
   for(let x=0;x<256;x+=64){ctx.strokeStyle='#3f382b35';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+2,256);ctx.stroke();}
   const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;map.wrapS=map.wrapT=THREE.RepeatWrapping;return map;
 }
-function signMap(){const c=document.createElement('canvas');c.width=1536;c.height=256;const ctx=c.getContext('2d');ctx.fillStyle='#e8bd4d';ctx.fillRect(0,0,1536,256);ctx.strokeStyle='#4a4030';ctx.lineWidth=8;ctx.strokeRect(14,14,1508,228);ctx.strokeRect(26,26,1484,204);ctx.fillStyle='#282d25';ctx.textAlign='center';ctx.font='bold 105px Georgia';ctx.fillText('Chaya Kada',768,135);ctx.font='30px Georgia';ctx.fillText('CHAYA · KAPPI · KADI',768,200);const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;return map;}
+function signMap(){const c=document.createElement('canvas');c.width=1536;c.height=256;const ctx=c.getContext('2d');ctx.fillStyle='#e8bd4d';ctx.fillRect(0,0,1536,256);ctx.strokeStyle='#4a4030';ctx.lineWidth=8;ctx.strokeRect(14,14,1508,228);ctx.strokeRect(26,26,1484,204);ctx.fillStyle='#282d25';ctx.textAlign='center';ctx.font='bold 88px Georgia';ctx.fillText('Adivaram Chaaya Kada',768,135,1330);ctx.font='30px Georgia';ctx.fillText('CHAYA · KAPPI · KADI',768,200);const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;return map;}
 function menuMap(){const c=document.createElement('canvas');c.width=512;c.height=768;const ctx=c.getContext('2d');ctx.fillStyle='#d8b352';ctx.fillRect(0,0,512,768);ctx.fillStyle='#30382a';ctx.textAlign='center';ctx.font='bold 68px Georgia';ctx.fillText('Chaya',256,120);ctx.font='36px Georgia';['Kappi','Lime','Ullivada','Parippuvada','Pazhampori'].forEach((s,i)=>ctx.fillText(s,256,240+i*85));const map=new THREE.CanvasTexture(c);map.colorSpace=THREE.SRGBColorSpace;return map;}

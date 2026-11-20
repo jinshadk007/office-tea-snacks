@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Shop Menu | Chaya Kada</title>
+<title>Shop Menu | Adivaram Chaaya Kada</title>
 <style>
 :root{--bg:#0b0b0b;--card:#161616;--line:#2a2a2a;--y:#ffc62a;--w:#fff;--mut:#a8a8a8;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
@@ -103,7 +103,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
 <h2 id="admin-login-title">Office admin</h2><p class="sub">Enter the office admin password.</p>
 <label for="admin-password">Password</label><input id="admin-password" type="password" autocomplete="current-password" required maxlength="128">
 <p id="admin-login-error" role="alert"></p><div class="abtn"><button class="btn" type="submit" id="admin-submit">Sign in</button><button class="cancel" type="button" id="admin-cancel">Cancel</button></div></form></dialog>
-<header><div class="wrap"><a class="menu-home" href="./demos/virtual-shop-model.html" aria-label="Back to Chaya Kada">←</a><div class="logo" id="logo">Chaya Kada</div>
+<header><div class="wrap"><a class="menu-home" href="./demos/virtual-shop-model.html" aria-label="Back to Adivaram Chaaya Kada">←</a><div class="logo" id="logo">Adivaram Chaaya Kada</div>
 <a href="#tea" data-go="tea">Tea &amp; Coffee</a><a href="#snacks" data-go="snacks">Snacks</a><a href="#totals" data-go="totals">Totals</a><a href="#hist" data-go="hist">History</a><a href="#admin" data-go="admin" class="adm">Admin</a>
 <button class="chip" id="admin-access">Admin sign in</button><button class="chip swb" id="sw" style="background:#fff">Switch to user view</button><button class="chip" id="cnt">Cart: 0</button></div></header>
 
@@ -154,7 +154,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 110px}
  </div>
 </div>
 
-<section id="admin" class="rv admbox"><div class="panel" style="border-color:var(--y)"><h2>Admin <span>panel</span></h2><p class="sub">All of today’s orders by team member. When everyone has ordered, close orders and send the list on WhatsApp.</p><div style="overflow-x:auto" id="al"></div><form id="menu-price-form" style="margin:24px 0"><h3>Menu prices</h3><p class="sub">Prices in rupees. Saved changes apply to new orders; previous orders keep their original prices.</p><div id="menu-price-fields" class="two"></div><div class="abtn"><button class="btn" id="save-menu-prices" type="submit">Save menu prices</button></div><p id="menu-price-status" role="status"></p></form><div class="two" style="grid-template-columns:1fr auto;margin-top:14px"><input id="admph" type="tel" inputmode="tel" placeholder="WhatsApp number to receive orders"><button class="btn adm" id="admsave">Save number</button></div><div class="abtn"><button class="btn adm" id="sendtot">Send total list to WhatsApp</button><button class="cancel adm" id="closeb">Close today’s orders</button><button class="cancel adm" id="reset">Clear today’s orders</button></div></div></section>
+<section id="admin" class="rv admbox"><div class="panel" style="border-color:var(--y)"><h2>Admin <span>panel</span></h2><p class="sub">All of today’s orders by team member. When everyone has ordered, close orders and send the list on WhatsApp.</p><div style="overflow-x:auto" id="al"></div><form id="menu-price-form" style="margin:24px 0"><h3>Menu prices</h3><p class="sub">Prices in rupees. Saved changes apply to new orders; previous orders keep their original prices.</p><div id="menu-price-fields" class="two"></div><div class="abtn"><button class="btn" id="save-menu-prices" type="submit">Save menu prices</button></div><p id="menu-price-status" role="status"></p></form><section style="margin:24px 0"><h3>Pattu Book cover photos</h3><p class="sub">Choose a member to update their book cover and order profile photo. PNG, JPEG, WebP or GIF, up to 500 KB.</p><div id="member-cover-fields" class="two"></div><p id="member-cover-status" role="status"></p></section><div class="two" style="grid-template-columns:1fr auto;margin-top:14px"><input id="admph" type="tel" inputmode="tel" placeholder="WhatsApp number to receive orders"><button class="btn adm" id="admsave">Save number</button></div><div class="abtn"><button class="btn adm" id="sendtot">Send total list to WhatsApp</button><button class="cancel adm" id="closeb">Close today’s orders</button><button class="cancel adm" id="reset">Clear today’s orders</button></div></div></section>
 <section id="totals" class="rv"><div class="panel"><h2>Total <span>Orders</span></h2>
 <p class="sub" id="live">Counting everyone’s orders…</p>
 <div class="big" id="big"></div><div class="tg" id="tg"></div>
@@ -196,6 +196,28 @@ const memberOptions=$("#member-options");
 const memberPhoto=$("#member-photo");
 const creditsDirectory="demos/pattu-book/albums/";
 const memberPhotos=new Map();
+let officeMembers=[];
+let memberNames=new Map();
+function refreshMemberCovers(){
+ const fields=$("#member-cover-fields");fields.replaceChildren();
+ for(const member of officeMembers){
+  const oldTitle=member.title;member.title=memberNames.get(member.id)||member.title;
+  const src=images["member-cover-"+member.id]||creditsDirectory+member.id+"/"+member.coverSmall;
+  memberPhotos.set(member.title,src);
+  const option=[...memberOptions.querySelectorAll("button")].find(b=>b.dataset.member===oldTitle);
+  if(option){option.querySelector("img").src=src;option.querySelector("span").textContent=member.title;option.dataset.member=member.title;}
+  if(memberSelect.value===oldTitle)memberSelect.value=member.title;
+  const row=document.createElement("div");row.style.cssText="display:flex;align-items:center;gap:10px;flex-wrap:wrap";
+  const image=document.createElement("img");image.src=src;image.alt="";image.className="member-photo";
+  const label=document.createElement("span");label.textContent=member.title;
+  const button=document.createElement("button");button.type="button";button.className="btn";button.dataset.u="member-cover-"+member.id;button.textContent="Change cover";button.setAttribute("aria-label","Change cover for "+member.title);
+  const nameInput=document.createElement("input");nameInput.value=member.title;nameInput.maxLength=60;nameInput.setAttribute("aria-label","Name for "+member.id);nameInput.style.minWidth="150px";
+  const save=document.createElement("button");save.type="button";save.className="btn";save.textContent="Save name";save.setAttribute("aria-label","Save name for "+member.id);
+  save.onclick=async()=>{if(!db||!isOwn||asUser)return;save.disabled=true;try{await result(db.rpc("ots_set_member_name",{member_id:member.id,new_name:nameInput.value.trim()}));memberNames.set(member.id,nameInput.value.trim());refreshMemberCovers();$("#member-cover-status").textContent="Member name saved.";localStorage.setItem("ots-member-covers-updated",String(Date.now()));}catch(error){$("#member-cover-status").textContent="Could not save name. Use a unique name from 1 to 60 characters.";}finally{save.disabled=false;}};
+  row.append(image,label,button,nameInput,save);fields.append(row);
+ }
+ restoreMember(memberSelect.value);
+}
 function restoreMember(name){
  memberSelect.value=name;
  $("#member-caption").textContent=name||"Select your name";
@@ -218,12 +240,13 @@ memberOptions.addEventListener("click",event=>{
  memberPicker.open=false;
  memberSummary.focus();
 });
-fetch(creditsDirectory+"collection.json")
+fetch(creditsDirectory+"collection.json?v=members-12",{cache:"no-store"})
  .then(response=>{
   if(!response.ok)throw new Error("Could not load team members");
   return response.json();
  })
  .then(({albums})=>{
+  officeMembers=albums;
   const options=albums.map(member=>{
    const photo=creditsDirectory+member.id+"/"+member.coverSmall;
    memberPhotos.set(member.title,photo);
@@ -240,6 +263,7 @@ fetch(creditsDirectory+"collection.json")
    return button;
   });
   memberOptions.replaceChildren(...options);
+  refreshMemberCovers();
   const saved=safe("ots-name");
   restoreMember(memberSelect.value||(memberPhotos.has(saved)?saved:""));
  })
@@ -406,7 +430,7 @@ function render(){
  $("#bcancel").disabled=!n&&!placed;
  $("#payment").hidden=!placed||!db;
  const selected=ITEMS.filter(it=>cart[it.id]);
- const orderItems=selected.length?selected.map(it=>`<div><span>${cart[it.id]} × ${it.n}</span><b>₹${Math.round(cart[it.id]*cartItemPrice(it)*100)/100}</b>${!groupByItem.has(it.id)&&MENU.some(item=>item.id===it.id)?"":`<button type="button" data-a="x" data-i="${it.id}" aria-label="Remove ${it.n}">×</button>`}</div>`).join(""):"<p>Your cart is empty.</p>";
+ const orderItems=selected.length?selected.map(it=>`<div><span>${cart[it.id]} × ${it.n}</span><b>₹${Math.round(cart[it.id]*cartItemPrice(it)*100)/100}</b><button type="button" data-a="x" data-i="${it.id}" aria-label="Remove ${it.n}">×</button></div>`).join(""):"<p>Your cart is empty.</p>";
  if($("#menu-cart-items").dataset.items!==orderItems){
   $("#menu-cart-items").innerHTML=orderItems;
   $("#menu-cart-items").dataset.items=orderItems;
@@ -464,6 +488,7 @@ fi.onchange=async()=>{
   });
   await result(db.rpc("ots_save_photo",{code:SLUG,photo_item:item,photo_src:src}));
   images[item]=src;setPics();
+  if(item.startsWith("member-cover-")){refreshMemberCovers();$("#member-cover-status").textContent="Cover saved. Refresh Pattu Book to see the updated photo.";try{localStorage.setItem("ots-member-covers-updated",String(Date.now()))}catch(_){} }
  }catch(error){alert("Photo upload failed. Please try again.")}
 };
 function receipt(){const nm=$("#name").value.trim(),ph=$("#phone").value.trim();
@@ -550,7 +575,7 @@ $("#reset").onclick=async()=>{
 };
 function showWorkspace(workspace){
  WS=workspace;
- $("#logo").textContent="☕ "+WS.name;
+ $("#logo").textContent="Adivaram Chaaya Kada";$("#logo").title=WS.name;
  applyRole();
  if(document.activeElement!==$("#admph"))$("#admph").value=WS.phone.replace(/^91/,"");
  $("#closeb").textContent=WS.closed===today?"Reopen today’s orders":"Close today’s orders";
@@ -596,8 +621,9 @@ async function enter(slug){
  if(menuSection)document.getElementById(menuSection).scrollIntoView();
  setInterval(refreshWorkspace,5000);
  try{
-  const photos=await result(db.from("ots_photos").select("item,src").eq("slug",slug));
-  images=Object.fromEntries(photos.map(photo=>[photo.item,photo.src]));setPics();
+  const [photos,names]=await Promise.all([result(db.from("ots_photos").select("item,src").eq("slug",slug)),result(db.rpc("ots_member_names"))]);
+  memberNames=new Map(names.map(member=>[member.member_id,member.name]));
+  images=Object.fromEntries(photos.map(photo=>[photo.item,photo.src]));setPics();refreshMemberCovers();
  }catch(error){console.error("Could not load workspace photos",error)}
 }
 async function openOffice(){
