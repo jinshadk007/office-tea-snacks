@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.min.js';
 import { buildTeaShop } from './tea-world.js';
 import { createFramePlayer } from './frame-player.js';
-import { illustrateShop } from './illustrated-world.js?v=couple-flow-17';
+import { illustrateShop } from './illustrated-world.js?v=three-cleaners-23';
 
 const track=document.querySelector('.walkthrough');
 const stage=document.querySelector('.world-stage');
@@ -53,8 +53,8 @@ canvas.addEventListener('lostpointercapture',stopLooking);
 addEventListener('keydown',event=>{if(event.key==='Escape')resetView();});
 const look=new THREE.Vector3();
 const route=[
- {p:0,position:[.35,3.1,16],look:[.35,2.5,0],fov:46},
- {p:.14,position:[.2,2.6,13.5],look:[.15,2,-.5],fov:44},
+ {p:0,position:[1,3.3,19],look:[1,2.4,0],fov:46},
+ {p:.14,position:[.7,2.7,16],look:[.5,2,-.5],fov:44},
  {p:.34,position:[-.28,1.7,1.4],look:[-.1,1.62,-4],fov:46},
  {p:.45,position:[-.25,1.66,-2.7],look:[.5,1.57,-5.7],fov:46},
  {p:.56,position:[.1,1.65,-5.3],look:[3.5,1.55,-6.3],fov:45},

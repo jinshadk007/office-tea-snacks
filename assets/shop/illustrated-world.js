@@ -9,7 +9,7 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
     material.color.set(color);material.roughness=name==='steel'?.5:.95;material.flatShading=true;material.needsUpdate=true;
   }
   const wood=grain();world.materials.wood.map=wood;world.materials.plaster.map=wood;
-  scene.background=new THREE.Color('#f7f5ef');scene.fog=new THREE.Fog('#f7f5ef',25,65);
+  scene.background=lightSky();scene.fog=new THREE.Fog('#f7f5ef',25,65);
   renderer.toneMappingExposure=1.02;
   for(const light of scene.children.filter(o=>o.isLight)){
     if(light.isHemisphereLight){light.color.set('#fff9eb');light.groundColor.set('#82745a');light.intensity=1.6;}
@@ -51,55 +51,48 @@ export function illustrateShop(world,scene,renderer,onReady=()=>{}){
   const ink=new THREE.LineBasicMaterial({color:'#33362e',transparent:true,opacity:.32});
   for(const mesh of meshes)mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry,35),ink));
 
-  const benchClocks=[];
   const benchPlayers=[];
-  // Upper-body movement leaves the seats and feet anchored in place.
-  addBench('./friends-bench/friends-bench.png','Two friends sharing tea on a wooden bench',-3.05,2.65,1.95,'friendsBench');
-  addAnimatedBench();
-  function addAnimatedBench(){
+  addAnimatedBench({folder:'./friends-bench/motion/',name:'Friends sipping tea and eating snacks',x:-3.05,z:2.65,height:2.05,count:95,frameKey:'friendsFrame'});
+  addAnimatedBench({folder:'./couple-bench/motion/',name:'Couple sipping tea on the front bench',x:3.15,z:4.6,height:2.15,count:95,frameKey:'coupleFrame'});
+  addAnimatedBench({folder:'./washing-side/trio-motion/',name:'Three friends washing cooking pots beside the shop',x:6.6,z:.8,height:2.05,count:96,frameKey:'washingFrame'});
+  const washPlatform=new THREE.Mesh(new THREE.BoxGeometry(3.9,.07,2.1),new THREE.MeshStandardMaterial({color:'#c6bea6',roughness:1}));
+  washPlatform.name='Side washing area';washPlatform.position.set(6.6,-.09,.7);washPlatform.receiveShadow=true;group.add(washPlatform);
+  function addAnimatedBench({folder,name,x,z,height,count,frameKey}){
     const source=document.createElement('canvas');source.width=960;source.height=540;source.hidden=true;document.querySelector('.actor-cache').append(source);
     const texture=new THREE.CanvasTexture(source);texture.colorSpace=THREE.SRGBColorSpace;
     texture.generateMipmaps=false;texture.minFilter=THREE.LinearFilter;
     const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.035,depthWrite:true,toneMapped:false});
-    const height=2.15;
     const bench=new THREE.Mesh(new THREE.PlaneGeometry(height*960/540,height),material);
-    bench.name='Couple sipping tea on the front bench';bench.position.set(3.15,height/2-.1,4.6);group.add(bench);
-    const player=createFramePlayer(source,{folder:new URL('./couple-bench/motion/',import.meta.url),count:95,cacheSize:18,onDraw(){texture.needsUpdate=true;renderer.domElement.dataset.coupleFrame=source.dataset.frame;onReady();}});
+    bench.name=name;bench.position.set(x,height/2-.1,z);group.add(bench);
+    const player=createFramePlayer(source,{folder:new URL(folder,import.meta.url),count,cacheSize:18,onDraw(){texture.needsUpdate=true;renderer.domElement.dataset[frameKey]=source.dataset.frame;onReady();}});
     benchPlayers.push(player);
-    const poster=new Image();poster.src=new URL('./couple-bench/motion/frame-0001.webp',import.meta.url);
+    const poster=new Image();poster.src=new URL('frame-0001.webp',new URL(folder,import.meta.url));
     poster.decode().then(()=>{source.getContext('2d').drawImage(poster,0,0,960,540);texture.needsUpdate=true;onReady();}).catch(()=>{});
     addEventListener('pagehide',()=>{player.destroy();texture.dispose();material.dispose();bench.geometry.dispose();},{once:true});
   }
-  function addBench(path,name,x,z,height,status){
-    new THREE.TextureLoader().load(new URL(path,import.meta.url).href,texture=>{
-      texture.colorSpace=THREE.SRGBColorSpace;
-      texture.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());
-      const width=height*texture.image.width/texture.image.height;
-      const clock={value:0};benchClocks.push(clock);
-      const material=new THREE.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.035,depthWrite:true,toneMapped:false});
-      material.onBeforeCompile=shader=>{
-        shader.uniforms.benchTime=clock;
-        shader.vertexShader='uniform float benchTime;\n'+shader.vertexShader;
-        shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
-          float body=smoothstep(0.30,0.65,uv.y);
-          float person=step(0.51,uv.x);
-          float phase=benchTime+person*2.2+${z.toFixed(2)};
-          transformed.x+=sin(phase*0.9)*0.014*body;
-          transformed.y+=sin(phase*1.4)*0.008*body;
-        `);
-      };
-      material.customProgramCacheKey=()=>`bench-idle-${status}`;
-      const bench=new THREE.Mesh(new THREE.PlaneGeometry(width,height,40,32),material);
-      bench.name=name;bench.position.set(x,height/2-.10,z);group.add(bench);
-      if(renderer.domElement)renderer.domElement.dataset[status]='ready';
-      onReady();
-    },undefined,error=>console.warn('A bench illustration could not be loaded.',error));
-  }
-
   return (seconds,enabled)=>{
-    for(const clock of benchClocks)clock.value=enabled?seconds:0;
     for(const player of benchPlayers){player.setActive(enabled);player.setProgress(enabled?(seconds%8)/8:0);}
   };
+}
+function lightSky(){
+  const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=1024;
+  const ctx=canvas.getContext('2d');
+  const wash=ctx.createLinearGradient(0,0,0,1024);
+  wash.addColorStop(0,'#e7f1f5');wash.addColorStop(.42,'#f0f5f4');wash.addColorStop(.8,'#f7f5ef');
+  ctx.fillStyle=wash;ctx.fillRect(0,0,1024,1024);
+  // Soft cloud clusters frame the title without crowding it.
+  for(const [x,y,rx,ry] of [[130,200,175,42],[850,260,200,45],[320,350,120,28]]){
+    for(const [dx,dy,size] of [[-.48,.13,.7],[0,-.13,1],[.5,.1,.78]]){
+      ctx.save();ctx.translate(x+dx*rx,y+dy*ry);ctx.scale(rx*size,ry*size);
+      const cloud=ctx.createRadialGradient(0,0,.12,0,0,1);
+      cloud.addColorStop(0,'rgba(255,255,255,.74)');
+      cloud.addColorStop(.45,'rgba(255,255,255,.52)');
+      cloud.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=cloud;ctx.fillRect(-1,-1,2,2);ctx.restore();
+    }
+  }
+  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+  addEventListener('pagehide',()=>texture.dispose(),{once:true});return texture;
 }
 function grain(){
   const c=document.createElement('canvas');c.width=c.height=256;const ctx=c.getContext('2d');ctx.fillStyle='#fff6d5';ctx.fillRect(0,0,256,256);

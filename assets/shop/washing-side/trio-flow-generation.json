@@ -1,0 +1,15 @@
+{
+  "tool": "Google Flow",
+  "account": "VenVision",
+  "model": "Veo 3.1 Lite",
+  "source": "Three_men_washing_pots_a2f7da15.mp4",
+  "project": "https://flow.google.com/project/7ddc7047-c2f3-4e17-b778-61f4ad3ef978",
+  "frames": 96,
+  "fps": 12,
+  "size": [
+    960,
+    540
+  ],
+  "backgroundKey": "#b3257c",
+  "prompt": "Animate three men washing pots, preserve reference identities and clothing; center man wears blue head wrap, green shirt and checked lungi. Locked camera, subtle scrubbing, pouring, blinking; 8-second loop on magenta background."
+}

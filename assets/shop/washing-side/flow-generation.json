@@ -1,0 +1,12 @@
+{
+  "provider": "Google Flow",
+  "account": "VenVision",
+  "model": "Veo 3.1 Lite",
+  "credits": 10,
+  "project": "https://flow.google.com/project/7ddc7047-c2f3-4e17-b778-61f4ad3ef978",
+  "duration": 8,
+  "fps": 12,
+  "frames": 96,
+  "action": "Two people from user portraits seated beside the tea shop, scrubbing a large cooking pot and rinsing a steel vessel in a basin. Preserve faces, local clothes and watercolor style. Locked camera; magenta background.",
+  "processing": "FFmpeg chroma key to transparent WebP sequence"
+}
