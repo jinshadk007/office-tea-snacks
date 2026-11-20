@@ -43,3 +43,9 @@ Apply `supabase/migrations/20261120_member_covers.sql` for a new database. Membe
 The landing page reveals the scene after startup portraits decode (with an 8-second safety limit). Pattu Book warms after the initial shop scene is ready, so the two renderers do not compete during the first scene setup.
 
 The yellow-shirt preparation character now performs a Google Flow porotta stretching and flipping loop, generated in the VenVision account with Veo 3.1 Lite. Its 96 transparent WebP frames play at 12 fps only while that part of the scene is active; the player retains a small frame window rather than decoding the whole sequence at startup. Generation details and prompt are in `assets/shop/actors/team-workers/porotta-motion/generation.json`.
+
+The local cinema loader now uses the user-supplied roaring-portrait screencast, trimmed at natural speed to 4.5 seconds and combined with a short lion roar. Browser chrome and playback controls are excluded, and an exterior matte blends the emblem into the cream background. It attempts sound automatically on each opening; when browser policy blocks sound, the facial animation still plays muted and a first tap may unmute it. There are no entry buttons.
+
+Rebuild with `scripts/render-roar-intro.py --source /absolute/path/to/recording.webm` using Pillow and imageio-ffmpeg. Source timing, audio cue and crop are recorded in `assets/shop/loading/roar-edit.json`; audio provenance is in `assets/shop/loading/SOUND-CREDITS.md`. The original recording is unchanged.
+
+Intro sound playback is protected from stale autoplay rejections: a trusted tap restarts the roar cue and enables sound in capture-phase pointer, touch, click or keyboard handlers. Sound is attempted on each opening; browser autoplay restrictions still apply before user interaction.

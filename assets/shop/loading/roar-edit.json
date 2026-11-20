@@ -1,0 +1,21 @@
+{
+  "source": "/home/orattice-pc-3/Videos/Screencasts/Screencast From 2026-11-20 16-40-52.webm",
+  "source_in": 0.9,
+  "source_out": 5.4,
+  "duration_seconds": 4.5,
+  "crop": [
+    36,
+    90,
+    1008,
+    882
+  ],
+  "output": [
+    768,
+    672
+  ],
+  "fps": 24,
+  "audio_onset_seconds": 1.85,
+  "audio_duration_seconds": 1.8,
+  "audio_credit": "SOUND-CREDITS.md",
+  "provenance": "User-supplied screencast; user explicitly requested use with the prepared lion sound."
+}

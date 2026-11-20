@@ -189,7 +189,7 @@ function render(time) {
   });
   renderer.render(scene,camera);
   stage.dataset.progress=progress.toFixed(4);canvas.dataset.drawCalls=String(renderer.info.render.calls);canvas.dataset.triangles=String(renderer.info.render.triangles);canvas.dataset.camera=camera.position.toArray().map(n=>n.toFixed(2)).join(',');
-  if(!hasRendered&&startupReady){hasRendered=true;loader.classList.add('is-ready');stage.classList.add('is-world-ready');document.body.classList.remove('shop-booting');dispatchEvent(new Event('shop-ready'));}
+  if(!hasRendered&&startupReady){hasRendered=true;if(!loader.dataset.cinemaIntro){loader.classList.add('is-ready');document.body.classList.remove('shop-booting');}stage.classList.add('is-world-ready');dispatchEvent(new Event('shop-ready'));}
   clearTimeout(idleTimer);
   if(progress!==target||!viewSettled)schedule();
   else if((workersVisible||outsideVisible)&&motion.matches)idleTimer=setTimeout(schedule,1000/12);
@@ -201,7 +201,7 @@ chapterButtons.forEach(button=>button.addEventListener('click',()=>jump(Number(b
 replay?.addEventListener('click',()=>jump(0));
 document.querySelector('.journey-brand').addEventListener('click',event=>{event.preventDefault();resetView();jump(0);});
 function fallback(error){
-  stage.classList.add('is-still');loader.classList.add('is-ready');document.body.classList.remove('shop-booting');dispatchEvent(new Event('shop-ready'));
+  stage.classList.add('is-still');if(!loader.dataset.cinemaIntro){loader.classList.add('is-ready');document.body.classList.remove('shop-booting');}dispatchEvent(new Event('shop-ready'));
   document.querySelector('.still-notice').hidden=false;
   track.style.minHeight='100svh';
   chapterButtons.forEach(button=>{button.disabled=true;});
@@ -222,7 +222,8 @@ try {
     addActor({name:role,...(animated?{folder:`./actors/team-workers/${role==='chai'?'chai-motion-clean':role==='vada'?'porotta-motion':role+'-motion'}/`,count:role==='chai'?85:96}:{still:`./actors/team-workers/${role}.png`}),width:animated?540:640,height:960,size:role==='vada'?3.65:3.2,position:[-2+i*2,.9,-10.65]});
   }
   // Decode startup portraits before revealing the first complete rendered scene.
-  Promise.race([Promise.allSettled([updateOutside.ready,...actors.map(actor=>actor.ready)]),new Promise(resolve=>setTimeout(resolve,8000))]).then(()=>{startupReady=true;schedule();});
+  const loaderImage=loader.querySelector("img");
+  Promise.race([Promise.allSettled([loaderImage?.decode(),updateOutside.ready,...actors.map(actor=>actor.ready)]),new Promise(resolve=>setTimeout(resolve,8000))]).then(()=>{startupReady=true;schedule();});
   // No continuous render loop when scrolling is settled.
   addEventListener('pattu-visibility',schedule);addEventListener('scroll',schedule,{passive:true});addEventListener('resize',resize);motion.addEventListener('change',schedule);
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else schedule();});

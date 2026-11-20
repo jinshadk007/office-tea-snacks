@@ -14,12 +14,14 @@
   <link rel="preload" as="image" href="assets/shop/couple-bench/couple-bench-v2.png">
   <link rel="stylesheet" href="assets/credits-theme.css">
   <link rel="stylesheet" href="assets/shop/preload-book.css?v=1">
-  <script type="module" src="assets/shop/preload-book.js?v=porotta-flow-38"></script>
+  <script type="module" src="assets/shop/preload-book.js?v=cinema-loader-45"></script>
   <link rel="stylesheet" href="assets/shop/walkthrough.css?v=world-1">
+  <link rel="stylesheet" href="assets/shop/cinema-loader.css?v=45">
+  <link rel="preload" as="image" href="assets/shop/loading/portrait-roar-poster.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/shop/actors/new-cook/new-cook.png">
-  <script type="module" src="assets/shop/walkthrough-original.js?v=porotta-flow-38"></script>
+  <script type="module" src="assets/shop/walkthrough-original.js?v=cinema-loader-45"></script>
 <style>
-.shop-booting{overflow:hidden}.world-loading{position:fixed;background:#f7f5ef;color:#516044;z-index:100}.world-loading .loading-mark{border-color:#849169;animation:tea-breathe 1.4s ease-in-out infinite}.world-loading p{font-size:12px;letter-spacing:.06em}.world-loading::after{content:"";width:100px;height:2px;background:linear-gradient(90deg,transparent,#849169,transparent);animation:tea-breathe 1.4s ease-in-out infinite}@keyframes tea-breathe{50%{opacity:.45}}@media(prefers-reduced-motion:reduce){.world-loading .loading-mark,.world-loading::after{animation:none}}
+.shop-booting{overflow:hidden}
 .journey-navigation .journey-explore{width:auto;border-radius:16px;padding:0 12px;white-space:nowrap;background:#1f3026cc;font-size:11px;min-height:34px}
 .world-canvas{cursor:grab;touch-action:pan-y pinch-zoom}.is-looking .world-canvas{cursor:grabbing}
 @media(max-width:650px){.journey-navigation{flex-wrap:wrap}.journey-explore{order:3}.journey-copy{bottom:145px}}
@@ -48,11 +50,19 @@
           <button type="button" class="journey-explore" title="Drag to look around. Scroll to move. Click to reset the view.">Reset view ↺</button>
         </div>
         <p class="still-notice" hidden>A still view of our chayakkada.</p>
-        <div class="world-loading" role="status"><span class="loading-mark" aria-hidden="true">ചാ</span><p>Getting your chayakkada ready…</p></div>
+        <div class="world-loading" role="status" aria-label="Opening Adivaram Chaaya Kada">
+          <div class="cinema-loader">
+            <p class="cinema-brand">Adivaram <span>Chaaya Kada</span></p>
+            <div class="cinema-emblem"><img src="assets/shop/loading/portrait-roar-poster.webp" alt="" width="768" height="672" fetchpriority="high"><video class="cinema-roar" src="assets/shop/loading/portrait-roar.mp4" poster="assets/shop/loading/portrait-roar-poster.webp" playsinline preload="auto" aria-hidden="true"></video></div>
+            <span class="cinema-progress" aria-hidden="true"></span>
+            <p class="cinema-caption">Opening the chayakkada…</p>
+          </div>
+        </div>
         <div class="actor-cache" hidden aria-hidden="true"></div>
         <noscript><p class="still-notice">Enable JavaScript to explore the virtual tea shop.</p></noscript>
       </div>
     </section>
   </main>
+  <script src="assets/shop/cinema-loader.js?v=45"></script>
 </body>
 </html>
