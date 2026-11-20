@@ -1,0 +1,6 @@
+{
+  "tool": "built-in imagegen",
+  "prompt": "Use case: identity-preserve. Create one transparent-background character cutout for a Kerala tea shop illustration. Image 1 is the identity reference: use the central man's recognizable face, curly black hair, full dark beard and moustache, brown skin; ignore all phone UI, circular crop and black background. Image 2 is pose and framing reference only, NOT facial identity. Replace that cook with the man from image 1. Keep cream rolled-sleeve kurta and olive work apron with brown leather straps. Warm detailed hand-painted ink-and-watercolor illustration, natural anatomy and recognizable likeness, restrained stylization. Front three-quarter pose looking gently down to his right at cooking, right hand extended downward holding a small brass skimmer, left hand relaxed near waist. Frame head through upper thighs, centered, entire arms visible. Landscape 16:9 transparent canvas; person occupies central 40 percent width and almost full height like image 2. No stove, pan, food, furniture, text, border, background or ground shadow. Actual transparent alpha around the isolated character.",
+  "reference": "User-provided portrait, 2026-11-20",
+  "usage": "Static illustrated frying-station character; scene cooking motion remains procedural."
+}

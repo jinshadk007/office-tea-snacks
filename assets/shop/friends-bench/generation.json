@@ -1,0 +1,11 @@
+{
+  "generator": "Built-in image_gen",
+  "asset": "friends-bench.png",
+  "input_roles": [
+    "First supplied portrait: left friend facial identity, curly hair, black glasses and beard",
+    "Second supplied portrait: right friend facial identity, thick curly hair and small moustache",
+    "Kerala tea-shop illustration: style, clothing and seating reference only"
+  ],
+  "prompt": "Create a genuinely transparent, isolated hand-inked watercolor illustration of the exact two friends seated together on one rustic wooden bench, complete full bodies, feet, slippers and bench legs. Preserve both recognisable facial identities. Left friend wears a tan patterned short-sleeve shirt and blue-grey checked Kerala lungi, glasses and beard, holds amber tea below his face. Right friend wears a grey-blue striped polo and off-white mundu, holds tea and a vada snack. Relaxed natural conversation. Match the reference’s vintage Kerala storybook ink outlines, delicate hatching and warm watercolor. No shop, scenery, background rectangle, text, watermark or copied signature. Front three-quarter view with transparent margins.",
+  "integration": "Front-facing alpha illustration on a plane outside the left side of the existing 3D shop, not a rigged 3D character model."
+}

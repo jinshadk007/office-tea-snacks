@@ -1,0 +1,14 @@
+{
+  "generator": "Built-in image_gen",
+  "asset": "couple-bench-v2.png",
+  "input_roles": [
+    "Previous couple illustration: edit target; preserve the man, bench and poses",
+    "New supplied woman portrait: exact female identity, black hijab and cream outfit"
+  ],
+  "prompt": "Replace only the right woman with the recognisable woman from the new portrait, preserving her facial features, warm smile, brown skin, black hijab with all hair covered, and modest loose cream long-sleeved embroidered/crochet-yoke outfit. Keep her seated with tea, near-front-facing and smiling toward the man. Preserve the left man, his identity, clothes, pose and tea, the bench, full-body framing, feet, legs, lighting and watercolor-and-ink style. Keep a genuine transparent alpha background with no scenery, paper, ground rectangle, lettering or watermark.",
+  "integration": "Original left friends bench retained. Updated second bench moved forward to z=4.6 while staying to the right of the doorway.",
+  "previous_version": {
+    "asset": "couple-bench.png",
+    "prompt": "Transparent full-body illustrated adult couple seated on one rustic wooden bench, looking warmly toward each other while holding amber tea glasses below their faces. Preserve the exact facial identity, short swept dark hair, lean clean-shaven face and brown skin of the central foreground man in the supplied portrait. Dress him in a white rolled-sleeve button shirt, muted sage-blue jeans and light sneakers. Original fictional adult female companion with loose dark hair, mustard kurta, off-white palazzo trousers and sandals; not a portrait of an actual girlfriend. Match existing bench illustration with warm watercolor, ink outlines and hatching. All feet, hands and bench legs visible. No shop, scenery, text, background rectangle, logos or watermark. Genuine transparent alpha."
+  }
+}

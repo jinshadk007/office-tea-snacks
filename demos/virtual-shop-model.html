@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <base href="../">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Step through the doorway of a traditional Kerala chayakkada. An interactive 3D journey through tea making, the kitchen and familiar hands at work.">
+  <meta name="theme-color" content="#203628">
+  <title>Inside Chaya Kada — A Kerala Tea Shop</title>
+  <script>if(/^#[a-f0-9]{32}$/i.test(location.hash)||new URLSearchParams(location.search).has('demo'))location.replace('./order.html'+location.search+location.hash);</script>
+  <link rel="preload" as="font" href="assets/fonts/instrument-serif-italic.woff2" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="assets/flow-frames/chai-pour-712fcdb4/frame-0001.webp">
+  <link rel="preload" as="image" href="assets/shop/friends-bench/friends-bench.png">
+  <link rel="preload" as="image" href="assets/shop/couple-bench/couple-bench-v2.png">
+  <link rel="stylesheet" href="assets/credits-theme.css">
+  <link rel="stylesheet" href="assets/shop/walkthrough.css?v=world-1">
+  <link rel="preload" as="image" href="assets/shop/actors/new-cook/new-cook.png">
+  <script type="module" src="assets/shop/walkthrough-original.js?v=merged-look-14"></script>
+<style>
+.journey-navigation .journey-explore{width:auto;border-radius:16px;padding:0 12px;white-space:nowrap;background:#1f3026cc;font-size:11px;min-height:34px}
+.world-canvas{cursor:grab;touch-action:pan-y pinch-zoom}.is-looking .world-canvas{cursor:grabbing}
+@media(max-width:650px){.journey-navigation{flex-wrap:wrap}.journey-explore{order:3}.journey-copy{bottom:145px}}
+</style><link rel="stylesheet" href="assets/shop/illustrated-world.css?v=yellow-kiosk-8"></head>
+<body class="virtual-kada">
+  <a class="skip" href="#journey-navigation">Skip to scene navigation</a>
+  <main id="main">
+    <section id="home" class="walkthrough" aria-label="Explore the virtual Kerala tea shop">
+      <div class="world-stage">
+        <img class="world-still" src="assets/shop/old-teashop/interior.webp" alt="A warm traditional Kerala tea shop interior" width="1536" height="1024">
+        <canvas class="world-canvas" role="img" aria-label="A Kerala tea shop with two wooden benches outside: two friends sharing tea and snacks on one bench, and a couple enjoying tea together on the other. Scroll through the doorway to explore tea making, the frying area and the shared preparation counter."></canvas>
+        <header class="journey-header">
+          <a class="journey-brand" href="#home" aria-label="Chaya Kada, return to the entrance"><span class="mark" aria-hidden="true">ചാ</span><span><strong>Chaya Kada</strong><small>നമ്മുടെ ചായക്കട</small></span></a>
+          <span>A KERALA TEA SHOP<br>SCROLL TO EXPLORE</span>
+        </header>
+        <div class="journey-copy is-intro">
+          <p class="journey-label" aria-live="polite">01 / OUTSIDE THE CHAYAKKADA</p>
+          <h1 class="journey-title">Oru chaya.<br>A little pause.</h1>
+          <p class="journey-hint">Scroll to step inside ↓</p>
+        </div>
+        <div id="journey-navigation" class="journey-navigation">
+          <button type="button" class="journey-explore" title="Drag to look around. Scroll to move. Click to reset the view.">Reset view ↺</button>
+          <div class="journey-progress" aria-hidden="true"><span></span></div>
+          <span>DRAG TO LOOK · SCROLL TO EXPLORE</span>
+          <button type="button" class="journey-replay" hidden>RETURN TO THE ENTRANCE ↑</button>
+        </div>
+        <p class="still-notice" hidden>A still view of our chayakkada.</p>
+        <div class="world-loading" role="status"><span class="loading-mark" aria-hidden="true">ചാ</span><p>Opening the chayakkada…</p></div>
+        <div class="actor-cache" hidden aria-hidden="true"></div>
+        <noscript><p class="still-notice">Enable JavaScript to explore the virtual tea shop.</p></noscript>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

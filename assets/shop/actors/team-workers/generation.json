@@ -1,0 +1,14 @@
+{
+  "tool": "built-in imagegen",
+  "kind": "Static transparent character illustrations",
+  "order": [
+    "chai: photo 2, left",
+    "onion: photo 3, middle",
+    "vada: photo 4, right"
+  ],
+  "prompts": {
+    "chai": "Use case: identity-preserve. Create an isolated standing Kerala tea-shop worker based on the person in the attached portrait. Preserve his recognizable face, skin tone, hairstyle, facial hair and age. Ignore phone UI, circular crop, background and original pose. Keep his dark green cap and curly fringe. He wears a cream rolled sleeve linen shirt and a plain muted cream mundu. Action: holding a stainless steel tumbler at waist level and stirring it with a spoon, looking down gently toward his work. Warm detailed hand-painted ink-and-watercolor illustration with natural proportions, matching a nostalgic illustrated Kerala tea stall. Full body from head to feet, vertically centered on a portrait canvas, all arms and hands visible, generous clear padding around person. Real transparent alpha background. No table, counter, other people, scene, typography, UI, border or ground shadow.",
+    "onion": "Use case: identity-preserve. Create an isolated standing Kerala tea-shop worker based on the person in the attached portrait. Preserve his recognizable face, skin tone, hairstyle, facial hair and age. Ignore phone UI, circular crop, background and original pose.  He wears a dark forest green rolled sleeve shirt and a plain muted cream mundu. Action: mixing ingredients in a small steel bowl held at waist level, looking down gently toward his work. Warm detailed hand-painted ink-and-watercolor illustration with natural proportions, matching a nostalgic illustrated Kerala tea stall. Full body from head to feet, vertically centered on a portrait canvas, all arms and hands visible, generous clear padding around person. Real transparent alpha background. No table, counter, other people, scene, typography, UI, border or ground shadow.",
+    "vada": "Use case: identity-preserve. Create an isolated standing Kerala tea-shop worker based on the person in the attached portrait. Preserve his recognizable face, skin tone, hairstyle, facial hair and age. Ignore phone UI, circular crop, background and original pose.  He wears a ochre mustard rolled sleeve linen shirt and a plain muted cream mundu. Action: shaping a small piece of dough between his hands at waist level, looking down gently toward his work. Warm detailed hand-painted ink-and-watercolor illustration with natural proportions, matching a nostalgic illustrated Kerala tea stall. Full body from head to feet, vertically centered on a portrait canvas, all arms and hands visible, generous clear padding around person. Real transparent alpha background. No table, counter, other people, scene, typography, UI, border or ground shadow."
+  }
+}
